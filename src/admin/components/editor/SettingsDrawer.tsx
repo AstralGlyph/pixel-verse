@@ -102,7 +102,7 @@ export function SettingsDrawer({
                 value={settings.status}
                 onChange={(e) =>
                   onSettingsChange({
-                    status: e.target.value as 'draft' | 'published' | 'archived',
+                    status: e.target.value as PostStatus,
                   })
                 }
               >
