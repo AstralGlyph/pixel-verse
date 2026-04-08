@@ -1,0 +1,73 @@
+---
+/**
+ * @fileoverview JSON-LD 结构化数据组件
+ * @description 生成 JSON-LD 结构化数据，用于搜索引擎优化
+ * @description 支持 Website、Article、BreadcrumbList、Person 等类型
+ * @example
+ * <JsonLD type="article" data={articleData} />
+ */
+
+import { generateWebsiteJsonLDFromConfig, generateArticleJsonLD, generateBreadcrumbJsonLDFromConfig } from '@utils/seo';
+
+export interface Props {
+  /** 结构化数据类型 */
+  type: 'website' | 'article' | 'breadcrumb' | 'person';
+  /** 数据内容 */
+  data: Record<string, unknown>;
+}
+
+const { type, data } = Astro.props;
+
+let jsonLd: string = '';
+
+switch (type) {
+  case 'website':
+    jsonLd = JSON.stringify(generateWebsiteJsonLDFromConfig(data as {
+      name: string;
+      description: string;
+      url: string;
+      logo?: string;
+    }));
+    break;
+  case 'article':
+    jsonLd = JSON.stringify(generateArticleJsonLD(data as {
+      headline: string;
+      description: string;
+      url: string;
+      datePublished: string;
+      dateModified?: string;
+      author: { name: string; url?: string };
+      image?: string;
+      keywords?: string[];
+    }));
+    break;
+  case 'breadcrumb':
+    jsonLd = JSON.stringify(generateBreadcrumbJsonLDFromConfig(data as {
+      items: Array<{ name: string; url: string }>;
+    }));
+    break;
+  case 'person':
+    jsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: data.name || '',
+      description: data.description || '',
+      url: data.url || '',
+      sameAs: data.sameAs || [],
+      image: data.image || '',
+      jobTitle: data.jobTitle || '',
+      knowsAbout: data.knowsAbout || [],
+    });
+    break;
+}
+---
+
+<!-- JSON-LD 结构化数据 -->
+<script is:inline set:html={`
+  (function() {
+    var script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = ${JSON.stringify(jsonLd)};
+    document.head.appendChild(script);
+  })();
+`} />

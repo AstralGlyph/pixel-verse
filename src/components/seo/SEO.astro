@@ -1,0 +1,100 @@
+---
+/**
+ * @fileoverview SEO 元信息组件
+ * @description 生成页面级别的 SEO meta tags，包括 Open Graph、Twitter Card、canonical URL 等
+ * @dependencies seo.ts 工具函数
+ * @example
+ * <SEO
+ *   title="文章标题"
+ *   description="文章描述"
+ *   canonicalUrl="https://example.com/blog/post"
+ *   ogImage="https://example.com/og-image.jpg"
+ *   type="article"
+ *   publishedTime="2026-04-01"
+ *   modifiedTime="2026-04-01"
+ *   tags={["Astro", "React"]}
+ * />
+ */
+
+export interface Props {
+  /** 页面标题 */
+  title?: string;
+  /** 页面描述 */
+  description?: string;
+  /** 规范 URL */
+  canonicalUrl?: string;
+  /** OG 图片 URL */
+  ogImage?: string;
+  /** 页面类型：website 或 article */
+  type?: 'website' | 'article';
+  /** 发布时间 */
+  publishedTime?: string;
+  /** 修改时间 */
+  modifiedTime?: string;
+  /** 标签列表 */
+  tags?: string[];
+  /** 是否允许索引 */
+  noindex?: boolean;
+  /** 是否允许跟随链接 */
+  nofollow?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogImage,
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+  tags = [],
+  noindex = false,
+  nofollow = false,
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString() || 'https://pixelverse.blog';
+const fullTitle = title ? `${title} | PixelVerse` : 'PixelVerse | 内容即体验';
+const fullDescription = description || '内容即体验的个人博客系统。每篇文章都是一次独立的体验，每次访问都有新的发现。';
+const canonical = canonicalUrl || Astro.url?.toString() || siteUrl;
+const ogImageUrl = ogImage || `${siteUrl}/images/og-default.png`;
+
+// robots 指令
+const robotsContent = [
+  noindex ? 'noindex' : 'index',
+  nofollow ? 'nofollow' : 'follow',
+].join(',');
+---
+
+{/* 基础 Meta */}
+<meta name="title" content={fullTitle} />
+<meta name="description" content={fullDescription} />
+<meta name="robots" content={robotsContent} />
+<meta name="generator" content="Astro" />
+
+{/* Open Graph */}
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={fullDescription} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content="PixelVerse" />
+<meta property="og:locale" content="zh_CN" />
+
+{type === 'article' && publishedTime && (
+  <meta property="article:published_time" content={publishedTime} />
+)}
+{type === 'article' && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime} />
+)}
+{tags.map((tag) => (
+  <meta property="article:tag" content={tag} />
+))}
+
+{/* Twitter Card */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={fullDescription} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+{/* Canonical URL */}
+<link rel="canonical" href={canonical} />

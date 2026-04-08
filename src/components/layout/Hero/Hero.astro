@@ -1,0 +1,139 @@
+---
+/**
+ * @fileoverview Hero Section 组件
+ * @description 首页顶部展示区域，包含个人介绍和社交链接
+ */
+
+export interface Props {
+  /** 名称 */
+  name: string;
+  /** 标题/职位 */
+  title: string;
+  /** 描述文本 */
+  description: string;
+  /** 头像 URL */
+  avatar?: string;
+  /** 社交链接 */
+  socialLinks?: Array<{
+    name: string;
+    url: string;
+    icon: string;
+  }>;
+}
+
+const {
+  name = 'PixelVerse',
+  title = '内容即体验',
+  description = '一个融合交互式叙事、AI 增强、沉浸式视觉和极致阅读体验的个人数字空间。',
+  avatar = '/images/avatar.png',
+  socialLinks = [],
+} = Astro.props;
+---
+
+<section class="hero-section">
+  <div class="hero-content">
+    {/* 头像 */}
+    <div class="hero-avatar">
+      <img
+        src={avatar}
+        alt={`${name} 的头像`}
+        class="w-24 h-24 rounded-full border-4 border-border shadow-lg"
+        loading="eager"
+      />
+    </div>
+
+    {/* 名称 */}
+    <h1 class="hero-name">
+      {name}
+    </h1>
+
+    {/* 标题 */}
+    <p class="hero-title">
+      {title}
+    </p>
+
+    {/* 描述 */}
+    <p class="hero-description">
+      {description}
+    </p>
+
+    {/* 社交链接 */}
+    {socialLinks.length > 0 && (
+      <div class="hero-social">
+        {socialLinks.map((link) => (
+          <a
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-link"
+            aria-label={link.name}
+          >
+            <span class="sr-only">{link.name}</span>
+            {/* 使用 emoji 作为图标占位 */}
+            {link.icon}
+          </a>
+        ))}
+      </div>
+    )}
+
+    {/* CTA 按钮 */}
+    <div class="hero-cta">
+      <a href="/blog" class="cta-button cta-primary">
+        浏览文章
+      </a>
+      <a href="/about" class="cta-button cta-secondary">
+        了解更多
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    @apply py-16 sm:py-24;
+  }
+
+  .hero-content {
+    @apply flex flex-col items-center text-center max-w-2xl mx-auto;
+  }
+
+  .hero-avatar {
+    @apply mb-6;
+  }
+
+  .hero-name {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mb-3;
+  }
+
+  .hero-title {
+    @apply text-lg sm:text-xl text-accent font-medium mb-4;
+  }
+
+  .hero-description {
+    @apply text-text-secondary text-base sm:text-lg leading-relaxed mb-8 max-w-xl;
+  }
+
+  .hero-social {
+    @apply flex items-center gap-4 mb-8;
+  }
+
+  .social-link {
+    @apply p-3 rounded-full bg-bg-tertiary text-text-secondary hover:text-accent transition-colors;
+  }
+
+  .hero-cta {
+    @apply flex flex-wrap justify-center gap-4;
+  }
+
+  .cta-button {
+    @apply px-6 py-3 rounded-lg font-medium transition-colors;
+  }
+
+  .cta-primary {
+    @apply bg-accent text-white hover:opacity-90;
+  }
+
+  .cta-secondary {
+    @apply bg-bg-tertiary text-text-primary hover:bg-border;
+  }
+</style>
