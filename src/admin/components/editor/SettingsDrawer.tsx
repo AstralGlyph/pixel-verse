@@ -1,24 +1,19 @@
 /**
  * @fileoverview 文章设置抽屉组件
  * @description 从右侧滑入的设置面板，包含发布设置、分类标签、SEO 设置
+ * @author AI
+ * @dependencies lucide-react, src/admin/types/index.ts
  */
 
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
+import type { Category, Tag, PostStatus } from '../../types';
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-}
-
-interface Tag {
-  id: string;
-  name: string;
-  slug: string;
-}
+const inputClass =
+  'w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast';
 
 interface PostSettings {
-  status: 'draft' | 'published' | 'archived';
+  status: PostStatus;
   categoryId: string;
   tagIds: string[];
   seoTitle: string;
@@ -43,6 +38,15 @@ export function SettingsDrawer({
   categories,
   tags,
 }: SettingsDrawerProps) {
+  // ESC 键关闭
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
   return (
     <>
       {/* 遮罩 */}
@@ -50,11 +54,15 @@ export function SettingsDrawer({
         <div
           className="fixed inset-0 bg-black/20 z-40 transition-opacity duration-normal"
           onClick={onClose}
+          aria-hidden="true"
         />
       )}
 
       {/* 抽屉面板 */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="文章设置"
         className={`fixed right-0 top-0 bottom-0 w-[320px] bg-glass-bg/95 backdrop-blur-xl border-l border-glass-border z-50
           transform transition-transform duration-normal overflow-y-auto
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
@@ -65,6 +73,7 @@ export function SettingsDrawer({
           <button
             type="button"
             onClick={onClose}
+            aria-label="关闭设置"
             className="p-1.5 rounded-md hover:bg-glass-bg-hover transition-colors text-text-secondary"
           >
             <X className="h-4 w-4" />
@@ -101,7 +110,7 @@ export function SettingsDrawer({
               <div>
                 <label className="mb-1 block text-xs text-text-secondary">分类</label>
                 <select
-                  className="w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast"
+                  className={inputClass}
                   value={settings.categoryId}
                   onChange={(e) => onSettingsChange({ categoryId: e.target.value })}
                 >
@@ -128,6 +137,7 @@ export function SettingsDrawer({
                         {tag.name}
                         <button
                           type="button"
+                          aria-label={`移除标签 ${tag.name}`}
                           onClick={() =>
                             onSettingsChange({
                               tagIds: settings.tagIds.filter((id) => id !== tagId),
@@ -142,7 +152,7 @@ export function SettingsDrawer({
                   })}
                 </div>
                 <select
-                  className="w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast"
+                  className={inputClass}
                   value=""
                   onChange={(e) => {
                     if (e.target.value && !settings.tagIds.includes(e.target.value)) {
@@ -172,7 +182,7 @@ export function SettingsDrawer({
               <div>
                 <label className="mb-1 block text-xs text-text-secondary">SEO 标题</label>
                 <input
-                  className="w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast"
+                  className={inputClass}
                   value={settings.seoTitle}
                   onChange={(e) => onSettingsChange({ seoTitle: e.target.value })}
                   placeholder="留空则使用文章标题"
@@ -181,7 +191,7 @@ export function SettingsDrawer({
               <div>
                 <label className="mb-1 block text-xs text-text-secondary">SEO 描述</label>
                 <textarea
-                  className="w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast"
+                  className={inputClass}
                   rows={3}
                   value={settings.seoDescription}
                   onChange={(e) => onSettingsChange({ seoDescription: e.target.value })}
@@ -191,7 +201,7 @@ export function SettingsDrawer({
               <div>
                 <label className="mb-1 block text-xs text-text-secondary">SEO 关键词</label>
                 <input
-                  className="w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast"
+                  className={inputClass}
                   value={settings.seoKeywords}
                   onChange={(e) => onSettingsChange({ seoKeywords: e.target.value })}
                   placeholder="用逗号分隔"
