@@ -151,7 +151,7 @@ export function Sidebar() {
 
       {/* 平板弹出层遮罩 */}
       {isTablet && popupVisible && (
-        <div className="fixed inset-0 z-30 bg-black/20 pointer-events-none" />
+        <div className="fixed inset-0 z-30 bg-black/20" onClick={() => setPopupVisible(false)} />
       )}
     </>
   );
