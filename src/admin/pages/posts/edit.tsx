@@ -218,7 +218,7 @@ export function PostEditPage({ postId }: EditPageProps) {
         if (isNew && result.id) {
           setPost((prev) => ({ ...prev, id: result.id }));
           // 新建文章后跳转到编辑页面
-          window.location.href = `/admin/posts/${data.id}/edit`;
+          window.location.href = `/admin/posts/${result.id}/edit`;
         }
         if (!isAutoSave) {
           setSuccessMsg('保存成功');
