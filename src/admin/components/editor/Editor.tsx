@@ -32,6 +32,7 @@ import DetailsSummary from '@tiptap/extension-details-summary';
 import DetailsContent from '@tiptap/extension-details-content';
 import UniqueID from '@tiptap/extension-unique-id';
 import Audio from '@tiptap/extension-audio';
+import CodeMark from '@tiptap/extension-code';
 import MediaPicker from '../media/MediaPicker';
 import { createLowlight, all } from 'lowlight';
 import { Markdown } from '@tiptap/markdown';
@@ -146,7 +147,11 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
         blockquote: { HTMLAttributes: { class: 'zen-blockquote' } },
-        codeBlock: false, // 使用 CodeBlockLowlight 替代
+        code: false,         // 禁用内置 code mark，使用独立扩展以支持 marks 共存
+        codeBlock: false,    // 使用 CodeBlockLowlight 替代
+      }),
+      CodeMark.extend({
+        excludes: '',  // 覆盖默认的 excludes: '_'，允许 bold/italic/underline/strike 与 code 共存
       }),
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
@@ -249,7 +254,7 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
               const jsonContent = parse(text);
               editorInstance.chain().focus().insertContent(jsonContent).run();
             } catch {
-              // Markdown 解析产生的 mark 组合可能与 schema 冲突（如 bold+code），
+              // Markdown 解析产生的 mark 组合可能与 schema 冲突（已由 code mark 共存修复解决），
               // 降级为普通文本插入，由 TipTap 自动识别内联语法
               editorInstance.chain().focus().insertContent(text).run();
             }
