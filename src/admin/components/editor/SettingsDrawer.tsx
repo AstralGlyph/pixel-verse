@@ -63,7 +63,7 @@ export function SettingsDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="文章设置"
-        className={`fixed right-0 top-0 bottom-0 w-[320px] bg-glass-bg/95 backdrop-blur-xl border-l border-glass-border z-50
+        className={`fixed right-0 top-0 bottom-0 w-[320px] max-w-[85vw] bg-glass-bg/95 backdrop-blur-xl border-l border-glass-border z-50
           transform transition-transform duration-normal overflow-y-auto
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >

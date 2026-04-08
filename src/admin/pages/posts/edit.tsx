@@ -417,11 +417,16 @@ export function PostEditPage({ postId }: EditPageProps) {
               placeholder="开始写作..."
             />
           </div>
+
+          {/* 小屏幕大纲 */}
+          <div className="md:hidden">
+            <Outline content={post.content} />
+          </div>
         </div>
 
         {/* 右侧面板：大纲 + 设置抽屉 */}
         <div
-          className={`shrink-0 transition-all duration-normal ${
+          className={`hidden md:block shrink-0 transition-all duration-normal ${
             showSettings ? 'w-[200px]' : 'w-[280px]'
           } lg:sticky lg:top-20`}
         >
