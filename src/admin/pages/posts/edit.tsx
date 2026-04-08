@@ -12,13 +12,15 @@ import { Outline } from '../../components/common/Outline';
 import { Save, Send, Eye, ArrowLeft, Settings } from 'lucide-react';
 import { SettingsDrawer } from '../../components/editor/SettingsDrawer';
 
-interface Category {
+import type { PostStatus } from '../../types';
+
+interface CategoryOption {
   id: string;
   name: string;
   slug: string;
 }
 
-interface Tag {
+interface TagOption {
   id: string;
   name: string;
   slug: string;
@@ -31,7 +33,7 @@ interface PostData {
   content: string;
   excerpt: string;
   coverImageId: string;
-  status: 'draft' | 'published' | 'archived';
+  status: PostStatus;
   categoryId: string;
   tagIds: string[];
   seoTitle: string;
@@ -62,9 +64,8 @@ export function PostEditPage({ postId }: EditPageProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const _newTagName = useState('')[0];
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [tags, setTags] = useState<TagOption[]>([]);
   const [showSettings, setShowSettings] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 

@@ -7,7 +7,17 @@
 
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
-import type { Category, Tag, PostStatus } from '../../types';
+import type { PostStatus } from '../../types';
+
+interface CategoryOption {
+  id: string;
+  name: string;
+}
+
+interface TagOption {
+  id: string;
+  name: string;
+}
 
 const inputClass =
   'w-full rounded-md border border-glass-border bg-glass-bg-subtle backdrop-blur px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast';
@@ -26,8 +36,8 @@ interface SettingsDrawerProps {
   onClose: () => void;
   settings: PostSettings;
   onSettingsChange: (settings: Partial<PostSettings>) => void;
-  categories: Category[];
-  tags: Tag[];
+  categories: CategoryOption[];
+  tags: TagOption[];
 }
 
 export function SettingsDrawer({
