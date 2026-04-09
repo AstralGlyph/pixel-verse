@@ -113,7 +113,7 @@
       oklch(12% 0.08 220)
     ) !important;
     background-size: 300% 300% !important;
-    animation: aurora-flow 12s ease infinite;
+    animation: aurora-flow 12s ease infinite !important;
     color: oklch(94% 0.02 260) !important;
     border-color: oklch(22% 0.06 260) !important;
 
