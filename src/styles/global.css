@@ -67,19 +67,17 @@
   }
 
   .glass-card {
-    background: var(--gradient-card-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border-primary);
     border-radius: var(--radius-lg);
-    box-shadow: var(--glass-shadow), var(--glass-shadow-inset);
+    box-shadow: var(--shadow-card);
     transition: transform var(--duration-normal) var(--ease-spring),
                 box-shadow var(--duration-normal) var(--ease-smooth);
   }
 
   .glass-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--glass-shadow-lg), var(--glass-shadow-inset);
+    box-shadow: var(--shadow-card-hover);
   }
 
   /* 网格渐变背景 */
@@ -98,7 +96,7 @@
 
   /* 页面入场动画 */
   .page-content {
-    animation: fade-in-up var(--duration-normal) var(--ease-smooth);
+    animation: fade-in-up var(--duration-normal) var(--ease-paper);
   }
 
   /* 代码块容器 */
@@ -194,4 +192,35 @@
 /* 侧边栏过渡动画 */
 #sidebar-root {
   transition: width 0.2s ease;
+}
+
+/* 侧边栏书脊 — Paper Garden */
+.sidebar-spine {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--color-accent-primary), var(--color-accent-muted));
+  z-index: 100;
+  transition: width var(--duration-slow) var(--ease-float);
+  cursor: pointer;
+}
+
+.sidebar-spine::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent-primary);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-smooth);
+}
+
+.sidebar-spine:hover::after {
+  opacity: 1;
 }
