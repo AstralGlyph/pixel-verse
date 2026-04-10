@@ -42,6 +42,7 @@ export function MediaLibraryPage() {
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [savingAltTextId, setSavingAltTextId] = useState<string | null>(null);
+  const [localAltText, setLocalAltText] = useState<Record<string, string>>({});
 
   const fetchMedia = async (page: number, searchQuery?: string) => {
     setLoading(true);
@@ -117,7 +118,8 @@ export function MediaLibraryPage() {
     }
   };
 
-  const handleAltTextChange = async (id: string, newAltText: string) => {
+  const handleAltTextChange = async (id: string) => {
+    const newAltText = localAltText[id] ?? mediaList.find((m) => m.id === id)?.altText ?? '';
     setSavingAltTextId(id);
     try {
       const response = await fetch(`/api/admin/media/${id}`, {
@@ -128,10 +130,14 @@ export function MediaLibraryPage() {
       });
       if (!response.ok) throw new Error('保存失败');
 
-      // 乐观更新本地状态
       setMediaList((prev) =>
         prev.map((item) => (item.id === id ? { ...item, altText: newAltText || null } : item))
       );
+      setLocalAltText((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
     } catch (err) {
       alert(err instanceof Error ? err.message : '保存 alt 文本失败');
     } finally {
@@ -263,8 +269,9 @@ export function MediaLibraryPage() {
                 <input
                   className="mt-1 w-full rounded border border-transparent bg-transparent px-1 py-0.5 text-xs text-text-primary placeholder-text-tertiary focus:border-glass-border focus:bg-glass-bg-subtle focus:outline-none transition-all duration-fast"
                   placeholder="添加描述..."
-                  defaultValue={item.altText || ''}
-                  onBlur={(e) => handleAltTextChange(item.id, e.target.value)}
+                  value={localAltText[item.id] ?? item.altText ?? ''}
+                  onChange={(e) => setLocalAltText((prev) => ({ ...prev, [item.id]: e.target.value }))}
+                  onBlur={() => handleAltTextChange(item.id)}
                   disabled={savingAltTextId === item.id}
                   onClick={(e) => e.stopPropagation()}
                 />
@@ -316,8 +323,9 @@ export function MediaLibraryPage() {
                     <input
                       className="w-full rounded border border-transparent bg-transparent px-2 py-1 text-sm text-text-primary placeholder-text-tertiary focus:border-glass-border focus:bg-glass-bg-subtle focus:outline-none transition-all duration-fast"
                       placeholder="添加描述..."
-                      defaultValue={item.altText || ''}
-                      onBlur={(e) => handleAltTextChange(item.id, e.target.value)}
+                      value={localAltText[item.id] ?? item.altText ?? ''}
+                      onChange={(e) => setLocalAltText((prev) => ({ ...prev, [item.id]: e.target.value }))}
+                      onBlur={() => handleAltTextChange(item.id)}
                       disabled={savingAltTextId === item.id}
                       onClick={(e) => e.stopPropagation()}
                     />
