@@ -41,6 +41,7 @@ export function MediaLibraryPage() {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [savingAltTextId, setSavingAltTextId] = useState<string | null>(null);
 
   const fetchMedia = async (page: number, searchQuery?: string) => {
     setLoading(true);
@@ -113,6 +114,28 @@ export function MediaLibraryPage() {
       if (selectedId === id) setSelectedId(null);
     } catch (err) {
       alert(err instanceof Error ? err.message : '删除失败');
+    }
+  };
+
+  const handleAltTextChange = async (id: string, newAltText: string) => {
+    setSavingAltTextId(id);
+    try {
+      const response = await fetch(`/api/admin/media/${id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ altText: newAltText || null }),
+      });
+      if (!response.ok) throw new Error('保存失败');
+
+      // 乐观更新本地状态
+      setMediaList((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, altText: newAltText || null } : item))
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '保存 alt 文本失败');
+    } finally {
+      setSavingAltTextId(null);
     }
   };
 
@@ -237,6 +260,14 @@ export function MediaLibraryPage() {
                   {item.filename}
                 </p>
                 <p className="text-xs text-text-tertiary">{formatFileSize(item.fileSize)}</p>
+                <input
+                  className="mt-1 w-full rounded border border-transparent bg-transparent px-1 py-0.5 text-xs text-text-primary placeholder-text-tertiary focus:border-glass-border focus:bg-glass-bg-subtle focus:outline-none transition-all duration-fast"
+                  placeholder="添加描述..."
+                  defaultValue={item.altText || ''}
+                  onBlur={(e) => handleAltTextChange(item.id, e.target.value)}
+                  disabled={savingAltTextId === item.id}
+                  onClick={(e) => e.stopPropagation()}
+                />
               </div>
               <button
                 className="absolute right-1 top-1 rounded bg-glass-bg p-1 opacity-0 shadow transition-opacity hover:text-error group-hover:opacity-100"
@@ -256,6 +287,7 @@ export function MediaLibraryPage() {
             <thead className="bg-glass-bg-subtle">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-tertiary">文件</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-tertiary">描述</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-tertiary">类型</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-tertiary">大小</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-tertiary">上传者</th>
@@ -279,6 +311,16 @@ export function MediaLibraryPage() {
                       )}
                       <span className="text-sm font-medium text-text-primary">{item.filename}</span>
                     </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <input
+                      className="w-full rounded border border-transparent bg-transparent px-2 py-1 text-sm text-text-primary placeholder-text-tertiary focus:border-glass-border focus:bg-glass-bg-subtle focus:outline-none transition-all duration-fast"
+                      placeholder="添加描述..."
+                      defaultValue={item.altText || ''}
+                      onBlur={(e) => handleAltTextChange(item.id, e.target.value)}
+                      disabled={savingAltTextId === item.id}
+                      onClick={(e) => e.stopPropagation()}
+                    />
                   </td>
                   <td className="px-4 py-3 text-sm text-text-secondary">{item.mimeType}</td>
                   <td className="px-4 py-3 text-sm text-text-secondary">{formatFileSize(item.fileSize)}</td>
