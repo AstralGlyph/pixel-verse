@@ -150,6 +150,14 @@ stateDiagram-v2
 | `published` | ✅ | ✅ | ✅ |
 | `archived` | ❌ | ❌ | ❌ |
 
+**浏览次数（view_count）更新机制**：
+
+- **触发时机**：用户访问项目详情页 `GET /projects/[slug]` 时调用 `POST /api/projects/:slug/view`
+- **实现方式**：前端在页面 `onMount` 或 `useEffect` 中发送一次 view 请求，不阻塞页面渲染
+- **防刷策略**：使用 `localStorage` 标记，同一用户在 5 分钟内重复访问不重复计数
+- **API 行为**：`incrementViewCount(id)` 执行 `UPDATE projects SET view_count = view_count + 1 WHERE id = ?`，不记录审计日志
+- **前台展示**：项目详情页可选择显示浏览次数（与文章保持一致的展示风格）
+
 ---
 
 ## 2. 后端 API
@@ -170,6 +178,7 @@ stateDiagram-v2
 | `restoreProject(id)` | 恢复（archived → draft） |
 | `deleteProject(id)` | 删除项目 |
 | `getPublicProjects({ featured })` | 前台查询（仅 published，支持 featured 过滤） |
+| `incrementViewCount(id)` | 增加浏览次数（+1） |
 
 所有写操作（创建、更新、删除、状态转换）均需记录审计日志到 `audit_log` 表。
 
@@ -194,6 +203,7 @@ stateDiagram-v2
 |------|------|------|
 | GET | `/api/projects` | 获取已发布项目列表 |
 | GET | `/api/projects/:slug` | 获取单个已发布项目详情 |
+| POST | `/api/projects/:slug/view` | 增加浏览次数 |
 
 ### 2.3 API 响应格式
 
