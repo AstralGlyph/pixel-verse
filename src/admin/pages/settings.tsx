@@ -65,7 +65,30 @@ export default function SettingsPage() {
       return;
     }
 
-    setError('修改密码功能需要管理员在用户管理页面操作');
+    if (!currentPassword) {
+      setError('请输入当前密码');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/auth/change-password', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuccess('密码已修改');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setError(data.error?.message || '修改密码失败');
+      }
+    } catch (err) {
+      setError('修改密码失败，请重试');
+    }
   };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -226,9 +249,14 @@ export default function SettingsPage() {
                 className="w-full border border-glass-border bg-glass-bg-subtle backdrop-blur rounded-md px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all duration-fast"
               />
             </div>
-            <p className="text-sm text-text-tertiary">
-              提示：当前版本需要管理员在用户管理页面重置密码。后续版本将支持用户自行修改密码。
-            </p>
+            <button
+              type="submit"
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-md shadow-sm hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
+              style={{ background: 'var(--gradient-primary)' }}
+            >
+              <Key size={18} />
+              修改密码
+            </button>
           </form>
         </div>
       )}
