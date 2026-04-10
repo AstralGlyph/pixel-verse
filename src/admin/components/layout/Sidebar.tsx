@@ -69,12 +69,11 @@ export function Sidebar() {
 
       {/* 侧边栏面板 */}
       <aside
-        className={`fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] flex flex-col border-r border-border-secondary bg-card-bg transition-all duration-500 ease-float overflow-hidden ${
+        className={`shrink-0 h-screen flex flex-col border-r border-border-secondary bg-card-bg transition-all duration-500 ease-float overflow-hidden ${
           isShowing ? 'rounded-r-[var(--radius-xl)] shadow-floating' : ''
         }`}
         style={{
           width: `${sidebarWidth}px`,
-          transform: isShowing ? 'translateX(0)' : 'translateX(-100%)',
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -83,30 +82,30 @@ export function Sidebar() {
         {isShowing && (
           <>
             {/* Logo 区域 */}
-            <div className="flex h-12 items-center justify-between border-b border-border-secondary px-5 shrink-0">
-              <h1 className="text-base font-semibold tracking-tight text-text-primary">
+            <div className="flex h-16 items-center justify-between border-b border-border-secondary px-5 shrink-0">
+              <h1 className="text-lg font-semibold tracking-tight text-text-primary">
                 Paper Garden
               </h1>
               <div className="flex items-center gap-1">
                 <button
                   onClick={handlePinToggle}
-                  className="p-1 rounded-md text-text-tertiary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
+                  className="p-1.5 rounded-md text-text-tertiary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
                   aria-label={isPinned ? '取消固定' : '固定侧边栏'}
                   title={isPinned ? '取消固定' : '固定侧边栏'}
                 >
                   {isPinned ? (
-                    <Pin className="h-3.5 w-3.5" />
+                    <Pin className="h-4 w-4" />
                   ) : (
-                    <PinOff className="h-3.5 w-3.5" />
+                    <PinOff className="h-4 w-4" />
                   )}
                 </button>
                 {!isPinned && (
                   <button
                     onClick={() => setIsExpanded(false)}
-                    className="p-1 rounded-md text-text-tertiary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
+                    className="p-1.5 rounded-md text-text-tertiary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
                     aria-label="收起侧栏"
                   >
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-4 w-4" />
                   </button>
                 )}
               </div>
@@ -145,7 +144,7 @@ export function Sidebar() {
       {/* 主内容区偏移 */}
       <div
         className="transition-all duration-500 ease-float"
-        style={{ marginLeft: isPinned ? '260px' : '0px' }}
+        style={{ marginLeft: `${sidebarWidth}px` }}
       />
     </>
   );
