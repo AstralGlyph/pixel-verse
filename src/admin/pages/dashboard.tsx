@@ -8,35 +8,30 @@ import type { DashboardStats } from '../types';
 
 // 颜色映射：用于卡片顶部渐变条和数值颜色
 const colorMap: Record<string, { gradient: string; text: string; dot: string }> = {
-  blue: {
-    gradient: 'from-blue-500/20 to-blue-500/5',
-    text: 'text-blue-400',
-    dot: 'bg-blue-500',
+  olive: {
+    gradient: 'from-accent-primary/20 to-accent-primary/5',
+    text: 'text-accent-primary',
+    dot: 'bg-accent-primary',
+  },
+  terracotta: {
+    gradient: 'from-accent-secondary/20 to-accent-secondary/5',
+    text: 'text-accent-secondary',
+    dot: 'bg-accent-secondary',
   },
   green: {
-    gradient: 'from-green-500/20 to-green-500/5',
-    text: 'text-green-400',
-    dot: 'bg-green-500',
+    gradient: 'from-success/20 to-success/5',
+    text: 'text-success',
+    dot: 'bg-success',
   },
-  yellow: {
-    gradient: 'from-yellow-500/20 to-yellow-500/5',
-    text: 'text-yellow-400',
-    dot: 'bg-yellow-500',
+  amber: {
+    gradient: 'from-warning/20 to-warning/5',
+    text: 'text-warning',
+    dot: 'bg-warning',
   },
-  purple: {
-    gradient: 'from-purple-500/20 to-purple-500/5',
-    text: 'text-purple-400',
-    dot: 'bg-purple-500',
-  },
-  pink: {
-    gradient: 'from-pink-500/20 to-pink-500/5',
-    text: 'text-pink-400',
-    dot: 'bg-pink-500',
-  },
-  indigo: {
-    gradient: 'from-indigo-500/20 to-indigo-500/5',
-    text: 'text-indigo-400',
-    dot: 'bg-indigo-500',
+  info: {
+    gradient: 'from-info/20 to-info/5',
+    text: 'text-info',
+    dot: 'bg-info',
   },
 };
 
@@ -62,12 +57,12 @@ export function DashboardPage() {
   }, []);
 
   const statCards = [
-    { label: '总文章', value: stats?.totalPosts ?? 0, color: 'blue', span: 'col-span-2' },
+    { label: '总文章', value: stats?.totalPosts ?? 0, color: 'olive', span: 'col-span-2' },
     { label: '已发布', value: stats?.publishedPosts ?? 0, color: 'green', span: '' },
-    { label: '草稿', value: stats?.draftPosts ?? 0, color: 'yellow', span: '' },
-    { label: '分类', value: stats?.totalCategories ?? 0, color: 'purple', span: '' },
-    { label: '标签', value: stats?.totalTags ?? 0, color: 'pink', span: '' },
-    { label: '媒体文件', value: stats?.totalMedia ?? 0, color: 'indigo', span: '' },
+    { label: '草稿', value: stats?.draftPosts ?? 0, color: 'amber', span: '' },
+    { label: '分类', value: stats?.totalCategories ?? 0, color: 'terracotta', span: '' },
+    { label: '标签', value: stats?.totalTags ?? 0, color: 'info', span: '' },
+    { label: '媒体文件', value: stats?.totalMedia ?? 0, color: 'olive', span: '' },
   ];
 
   return (
@@ -77,7 +72,7 @@ export function DashboardPage() {
       ) : (
         <>
           {/* Bento Grid 统计卡片 */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-7">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-7">
             {statCards.map((stat) => {
               const colors = colorMap[stat.color];
               return (
