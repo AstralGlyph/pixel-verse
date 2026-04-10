@@ -82,7 +82,7 @@ const highlightedContent = await highlightCode(contentWithIds);
             <span>发布于: {new Date(post.publishedAt || post.createdAt).toLocaleDateString('zh-CN')}</span>
             <span>阅读时间: 约 {readingTime} 分钟</span>
             {post.category && (
-              <a href={`/blog/ssr?category=${post.category.slug}`} class="rounded-full bg-bg-tertiary px-3 py-1 text-xs text-accent-primary border border-border-primary hover:border-accent-primary">
+              <a href={`/blog/ssr?category=${post.category.slug}`} class="rounded-full bg-bg-tertiary px-3 py-1 text-xs text-accent-primary border border-border-primary hover:bg-glass-bg-subtle hover:border-accent-primary">
                 {post.category.name}
               </a>
             )}
@@ -90,7 +90,7 @@ const highlightedContent = await highlightCode(contentWithIds);
           {post.tags && post.tags.length > 0 && (
             <div class="mt-4 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <a href={`/blog/ssr?tag=${tag.slug}`} class="rounded-full bg-bg-tertiary px-3 py-1 text-xs text-text-secondary border border-border-primary hover:border-accent-primary">
+                <a href={`/blog/ssr?tag=${tag.slug}`} class="rounded-full bg-bg-tertiary px-3 py-1 text-xs text-text-secondary border border-border-primary hover:bg-glass-bg-subtle hover:border-accent-primary">
                   {tag.name}
                 </a>
               ))}
