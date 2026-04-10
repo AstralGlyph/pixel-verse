@@ -38,7 +38,7 @@ export default function SettingsPage() {
     try {
       const res = await fetch('/api/admin/auth/me');
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setUser(data.data);
         setUsername(data.data.username);
         setEmail(data.data.email);
@@ -105,11 +105,11 @@ export default function SettingsPage() {
         body: JSON.stringify({ username, email }),
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setSuccess('个人资料已更新');
         setUser({ ...user, username, email });
       } else {
-        setError(data.message || '更新失败');
+        setError(data.error?.message || '更新失败');
       }
     } catch (err) {
       setError('更新失败');
