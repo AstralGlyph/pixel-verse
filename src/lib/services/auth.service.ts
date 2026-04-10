@@ -131,6 +131,9 @@ export async function changePassword(userId: string, currentPassword: string, ne
   if (newPassword.length < 6) {
     throw new ApiError('INVALID_PASSWORD', '新密码长度至少为 6 位', 400);
   }
+  if (newPassword.length > 128) {
+    throw new ApiError('INVALID_PASSWORD', '新密码长度不能超过 128 位', 400);
+  }
 
   // 更新密码
   const passwordHash = await hashPassword(newPassword);
