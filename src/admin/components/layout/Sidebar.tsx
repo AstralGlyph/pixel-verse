@@ -69,7 +69,7 @@ export function Sidebar() {
 
       {/* 侧边栏面板 */}
       <aside
-        className={`shrink-0 h-screen flex flex-col border-r border-border-secondary bg-card-bg transition-all duration-500 ease-float overflow-hidden ${
+        className={`relative z-20 shrink-0 h-screen flex flex-col border-r border-border-secondary bg-card-bg transition-all duration-500 ease-float overflow-hidden ${
           isShowing ? 'rounded-r-[var(--radius-xl)] shadow-floating' : ''
         }`}
         style={{
