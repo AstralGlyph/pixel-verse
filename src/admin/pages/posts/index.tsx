@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/common/Button';
-import { Plus, Edit2, Trash2, Eye, Filter } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Filter, Send, RotateCcw, Archive } from 'lucide-react';
 
 interface Post {
   id: string;
@@ -97,6 +97,51 @@ export function PostsListPage() {
       fetchPosts(pagination.page, statusFilter || undefined);
     } catch (err) {
       alert(err instanceof Error ? err.message : '删除失败');
+    }
+  };
+
+  const handlePublish = async (id: string) => {
+    if (!confirm('确定要发布这篇文章吗？')) return;
+
+    try {
+      const response = await fetch(`/api/admin/posts/${id}/publish`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('发布失败');
+      fetchPosts(pagination.page, statusFilter || undefined);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '发布失败');
+    }
+  };
+
+  const handleUnpublish = async (id: string) => {
+    if (!confirm('确定要取消发布吗？文章将被归档。')) return;
+
+    try {
+      const response = await fetch(`/api/admin/posts/${id}/unpublish`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('取消发布失败');
+      fetchPosts(pagination.page, statusFilter || undefined);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '取消发布失败');
+    }
+  };
+
+  const handleUnarchive = async (id: string) => {
+    if (!confirm('确定要恢复这篇文章吗？文章将恢复为草稿状态。')) return;
+
+    try {
+      const response = await fetch(`/api/admin/posts/${id}/unarchive`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('恢复失败');
+      fetchPosts(pagination.page, statusFilter || undefined);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '恢复失败');
     }
   };
 
@@ -245,6 +290,33 @@ export function PostsListPage() {
                           onClick={() => window.open(`/blog/${encodeURIComponent(post.slug)}`, '_blank')}
                         >
                           <Eye className="h-4 w-4" />
+                        </button>
+                      )}
+                      {post.status === 'draft' && (
+                        <button
+                          className="rounded p-1 text-text-secondary transition-colors hover:text-success"
+                          title="发布"
+                          onClick={() => handlePublish(post.id)}
+                        >
+                          <Send className="h-4 w-4" />
+                        </button>
+                      )}
+                      {post.status === 'published' && (
+                        <button
+                          className="rounded p-1 text-text-secondary transition-colors hover:text-warning"
+                          title="取消发布"
+                          onClick={() => handleUnpublish(post.id)}
+                        >
+                          <Archive className="h-4 w-4" />
+                        </button>
+                      )}
+                      {post.status === 'archived' && (
+                        <button
+                          className="rounded p-1 text-text-secondary transition-colors hover:text-success"
+                          title="恢复"
+                          onClick={() => handleUnarchive(post.id)}
+                        >
+                          <RotateCcw className="h-4 w-4" />
                         </button>
                       )}
                       <button
