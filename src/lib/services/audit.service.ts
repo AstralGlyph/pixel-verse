@@ -80,6 +80,7 @@ export const AuditActions = {
   POST_DELETED: 'post.deleted',
   POST_PUBLISHED: 'post.published',
   POST_UNPUBLISHED: 'post.unpublished',
+  POST_UNARCHIVED: 'post.unarchived',
   PAGE_CREATED: 'page.created',
   PAGE_UPDATED: 'page.updated',
   PAGE_DELETED: 'page.deleted',
