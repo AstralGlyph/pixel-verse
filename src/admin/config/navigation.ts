@@ -13,6 +13,7 @@ import {
   Users,
   ScrollText,
   Settings,
+  FolderCode,
 } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 
@@ -30,6 +31,7 @@ export const navItems: NavItem[] = [
   { label: '标签管理', href: '/admin/tags', icon: Tags, dataPath: '/admin/tags' },
   { label: '媒体库', href: '/admin/media', icon: Image, dataPath: '/admin/media' },
   { label: '页面管理', href: '/admin/pages-admin', icon: FileStack, dataPath: '/admin/pages' },
+  { label: '项目管理', href: '/admin/projects', icon: FolderCode, dataPath: '/admin/projects' },
   { label: '用户管理', href: '/admin/users', icon: Users, dataPath: '/admin/users' },
   { label: '审计日志', href: '/admin/audit-log', icon: ScrollText, dataPath: '/admin/audit-log' },
   { label: '设置', href: '/admin/settings', icon: Settings, dataPath: '/admin/settings' },
