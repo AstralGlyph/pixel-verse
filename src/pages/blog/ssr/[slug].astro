@@ -1,0 +1,218 @@
+---
+/**
+ * @fileoverview SSR 博客详情页（数据库驱动）
+ * @description 从数据库获取已发布文章并渲染内容，支持响应式布局和 TOC 目录
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+import { getPostBySlug } from '@lib/services/post.service';
+import { MarkdownRenderer } from '@components/MarkdownRenderer';
+import { TOC } from '@components/layout/TOC/TOC';
+import { highlightCode } from '@utils/highlight';
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/blog/ssr');
+}
+
+const post = await getPostBySlug(slug);
+
+if (!post || post.status !== 'published') {
+  return Astro.redirect('/blog/ssr');
+}
+
+const readingTime = Math.ceil(post.content.replace(/<[^>]*>/g, '').split(/\s+/).length / 200);
+
+/**
+ * 从 HTML 内容中提取标题（h1-h4）
+ */
+function extractHeadings(html: string) {
+  const headings: Array<{ level: number; text: string; slug: string }> = [];
+  const regex = /<h([1-4])[^>]*>(.*?)<\/h\1>/gi;
+  let match;
+
+  while ((match = regex.exec(html)) !== null) {
+    const level = parseInt(match[1], 10);
+    const text = match[2].replace(/<[^>]*>/g, '').trim();
+    // 生成 slug：中文转拼音或使用文本本身
+    const slugText = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\u4e00-\u9fff-]/g, '');
+    headings.push({ level, text, slug: slugText });
+  }
+
+  return headings;
+}
+
+const headings = extractHeadings(post.content);
+
+// 为内容中的标题添加 id，以便 TOC 滚动定位
+function addHeadingIds(html: string, headingsList: Array<{ slug: string }>) {
+  let headingIndex = 0;
+  return html.replace(/<h([1-4])([^>]*)>/gi, (match, level, attrs) => {
+    if (headingIndex >= headingsList.length) return match;
+    const heading = headingsList[headingIndex];
+    headingIndex++;
+    // 只检查独立的 id= 属性，不匹配 data-id=
+    if (/\sid=/.test(attrs)) return match;
+    return `<h${level}${attrs} id="${heading.slug}">`;
+  });
+}
+
+const contentWithIds = addHeadingIds(post.content, headings);
+
+// 服务端语法高亮（Shiki）
+const highlightedContent = await highlightCode(contentWithIds);
+---
+
+<BaseLayout title={post.title} description={post.excerpt || post.title} showReadingProgress>
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <article class="w-full px-4 sm:px-6 lg:px-8 py-12 overflow-x-auto">
+      <div class="max-w-5xl mx-auto">
+        <!-- 文章头部 -->
+        <header class="mb-8">
+          <h1 class="mb-4 text-3xl sm:text-4xl font-bold text-text-primary">
+            {post.title}
+          </h1>
+          <div class="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
+            <span>作者: {post.author?.username || '匿名'}</span>
+            <span>发布于: {new Date(post.publishedAt || post.createdAt).toLocaleDateString('zh-CN')}</span>
+            <span>阅读时间: 约 {readingTime} 分钟</span>
+            {post.category && (
+              <a href={`/blog/ssr?category=${post.category.slug}`} class="rounded-full bg-bg-tertiary px-3 py-1 text-xs text-accent-primary border border-border-primary hover:border-accent-primary">
+                {post.category.name}
+              </a>
+            )}
+          </div>
+          {post.tags && post.tags.length > 0 && (
+            <div class="mt-4 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <a href={`/blog/ssr?tag=${tag.slug}`} class="rounded-full bg-bg-tertiary px-3 py-1 text-xs text-text-secondary border border-border-primary hover:border-accent-primary">
+                  {tag.name}
+                </a>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <!-- 摘要 -->
+        {post.excerpt && (
+          <div class="mb-8 rounded-lg bg-bg-secondary p-4 text-text-secondary italic">
+            {post.excerpt}
+          </div>
+        )}
+
+        <!-- 内容 + 目录 -->
+        <div class="xl:grid xl:grid-cols-[1fr_20rem] xl:gap-10">
+          <div class="prose prose-lg max-w-none dark:prose-invert">
+            <MarkdownRenderer content={highlightedContent} client:load />
+          </div>
+
+          <!-- 侧边目录（桌面端） -->
+          <aside class="hidden xl:block">
+            <div class="sticky top-20">
+              <TOC headings={headings} client:load />
+            </div>
+          </aside>
+        </div>
+      </div>
+    </article>
+
+    <!-- 移动端/平板目录按钮 -->
+    {headings.length > 0 && (
+      <div class="xl:hidden fixed bottom-6 right-6 z-40">
+        <TOC headings={headings} showOnMobile client:load />
+      </div>
+    )}
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  /* 排版优化 */
+  .prose :global(h2) {
+    @apply mt-12 mb-6 text-2xl font-bold text-text-primary;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(h3) {
+    @apply mt-8 mb-4 text-xl font-semibold text-text-primary;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(h4) {
+    @apply mt-6 mb-3 text-lg font-medium text-text-primary;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(p) {
+    @apply mb-4 leading-relaxed;
+  }
+
+  .prose :global(a) {
+    @apply text-accent hover:underline;
+  }
+
+  .prose :global(code) {
+    @apply px-1.5 py-0.5 bg-bg-tertiary rounded text-sm font-mono;
+  }
+
+  .prose :global(pre) {
+    @apply my-6 p-4 bg-bg-secondary rounded-lg overflow-x-auto;
+  }
+
+  .prose :global(pre code) {
+    @apply p-0 bg-transparent;
+  }
+
+  .prose :global(blockquote) {
+    @apply my-6 pl-4 border-l-4 border-accent italic text-text-secondary;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    @apply my-4 pl-6;
+  }
+
+  .prose :global(li) {
+    @apply mb-2;
+  }
+
+  .prose :global(img) {
+    @apply my-8 rounded-lg;
+  }
+
+  /* 表格响应式 */
+  .prose :global(table) {
+    @apply block w-full overflow-x-auto;
+  }
+
+  /* 任务列表（复选框列表） */
+  .prose :global(ul[data-type="taskList"]) {
+    @apply list-none pl-0;
+  }
+
+  .prose :global(ul[data-type="taskList"] li) {
+    @apply flex items-start gap-3 my-2;
+  }
+
+  .prose :global(ul[data-type="taskList"] li > label) {
+    @apply flex items-center pt-0.5 flex-shrink-0;
+  }
+
+  .prose :global(ul[data-type="taskList"] li > label input[type="checkbox"]) {
+    @apply w-5 h-5 rounded border-border-primary text-accent-primary cursor-pointer;
+  }
+
+  .prose :global(ul[data-type="taskList"] li > div) {
+    @apply flex-1 m-0;
+  }
+
+  .prose :global(ul[data-type="taskList"] li > div > p) {
+    @apply m-0;
+  }
+</style>
