@@ -16,13 +16,14 @@
   /* 文本色 — 高对比 */
   --color-text-primary: oklch(94% 0.02 260);
   --color-text-secondary: oklch(76% 0.02 260);
-  --color-text-tertiary: oklch(58% 0.02 260);
+  --color-text-tertiary: oklch(68% 0.02 260);
   --color-text-inverse: oklch(12% 0 0);
 
-  /* 强调色 — 极高饱和度电光蓝，赛博朋克感 */
-  --color-accent-primary: oklch(55% 0.32 260);
-  --color-accent-secondary: oklch(62% 0.3 270);
-  --color-accent-muted: oklch(42% 0.18 260);
+  /* 强调色 — 高亮度薄荷绿，AAA 级对比度 */
+  --color-accent-primary: oklch(76% 0.18 155);
+  --color-accent-secondary: oklch(80% 0.16 150);
+  --color-accent-muted: oklch(60% 0.15 155);
+  --color-accent-hover: oklch(82% 0.14 148);
 
   /* 语义色 — 高饱和 */
   --color-success: oklch(58% 0.26 145);
@@ -31,7 +32,7 @@
   --color-info: oklch(58% 0.24 230);
 
   /* 边框色 */
-  --color-border-primary: oklch(28% 0.05 260);
+  --color-border-primary: oklch(35% 0.05 260);
   --color-border-secondary: oklch(22% 0.05 260);
   --color-border-focus: oklch(55% 0.32 260);
 
@@ -88,12 +89,13 @@
     --color-bg-overlay: oklch(0% 0 0 / 0.9);
     --color-text-primary: oklch(94% 0.02 260);
     --color-text-secondary: oklch(76% 0.02 260);
-    --color-text-tertiary: oklch(58% 0.02 260);
+    --color-text-tertiary: oklch(68% 0.02 260);
     --color-text-inverse: oklch(12% 0 0);
-    --color-accent-primary: oklch(55% 0.32 260);
-    --color-accent-secondary: oklch(62% 0.3 270);
-    --color-accent-muted: oklch(42% 0.18 260);
-    --color-border-primary: oklch(28% 0.05 260);
+    --color-accent-primary: oklch(76% 0.18 155);
+    --color-accent-secondary: oklch(80% 0.16 150);
+    --color-accent-muted: oklch(60% 0.15 155);
+    --color-accent-hover: oklch(82% 0.14 148);
+    --color-border-primary: oklch(35% 0.05 260);
     --color-border-secondary: oklch(22% 0.05 260);
     --glass-bg: oklch(12% 0.04 260 / 0.95);
     --glass-bg-subtle: oklch(16% 0.04 260 / 0.92);
