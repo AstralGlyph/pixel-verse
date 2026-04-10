@@ -1,33 +1,20 @@
 /**
- * @fileoverview 响应式侧边栏组件
- * @description 根据屏幕尺寸和用户偏好显示图标栏或完整侧边栏
- * 平板 (<lg): 默认 48px 图标栏，悬停/点击弹出菜单浮层
- * 笔记本/大屏 (lg+): 默认展开，可手动折叠为 48px 图标栏
+ * @fileoverview Paper Garden 侧边栏 — 书脊式浮动面板
+ * @description 默认收起为 4px 橄榄绿渐变线（书脊），悬停/点击展开为 260px 浮动面板
+ * 支持固定模式（点击图钉）
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Pin, PinOff, ChevronLeft } from 'lucide-react';
 import { useSidebarStore } from '../../stores/sidebar.store';
 import { navItems } from '../../config/navigation';
 
 export function Sidebar() {
-  const { collapsed, toggle, setCollapsed } = useSidebarStore();
-  const [screenSize, setScreenSize] = useState<'tablet' | 'laptop' | 'desktop'>('laptop');
-  const [popupVisible, setPopupVisible] = useState(false);
+  const { collapsed, setCollapsed } = useSidebarStore();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isPinned, setIsPinned] = useState(!collapsed);
   const [activeItem, setActiveItem] = useState('');
-
-  // 检测屏幕尺寸
-  useEffect(() => {
-    const check = () => {
-      const w = window.innerWidth;
-      if (w < 1024) setScreenSize('tablet');
-      else if (w <= 1440) setScreenSize('laptop');
-      else setScreenSize('desktop');
-    };
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 当前页面高亮
   useEffect(() => {
@@ -36,123 +23,130 @@ export function Sidebar() {
     if (match) setActiveItem(match.href);
   }, []);
 
-  // 点击外部关闭弹出层
-  useEffect(() => {
-    if (!popupVisible) return;
-    const handler = () => setPopupVisible(false);
-    document.addEventListener('click', handler);
-    return () => document.removeEventListener('click', handler);
-  }, [popupVisible]);
+  // 展开/收起动画延迟
+  const handleMouseEnter = useCallback(() => {
+    if (isPinned) return;
+    hoverTimerRef.current = setTimeout(() => {
+      setIsExpanded(true);
+    }, 150);
+  }, [isPinned]);
 
-  const isTablet = screenSize === 'tablet';
-  // 平板模式下，图标栏点击触发弹出层
-  const handleIconClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (isTablet) {
-        e.stopPropagation();
-        setPopupVisible((prev) => !prev);
-      }
-    },
-    [isTablet]
-  );
+  const handleMouseLeave = useCallback(() => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+    if (!isPinned) {
+      setIsExpanded(false);
+    }
+  }, [isPinned]);
 
-  const expandedWidth = screenSize === 'desktop' ? 256 : 200;
-  const sidebarWidth = isTablet ? 48 : collapsed ? 48 : expandedWidth;
+  const handleSpineClick = useCallback(() => {
+    setIsExpanded(true);
+  }, []);
+
+  const handlePinToggle = useCallback(() => {
+    setIsPinned((prev) => {
+      const next = !prev;
+      setCollapsed(!next);
+      return next;
+    });
+  }, [setCollapsed]);
+
+  const isShowing = isPinned || isExpanded;
+  const sidebarWidth = isShowing ? 260 : 0;
 
   return (
     <>
+      {/* 书脊 — 始终可见的 4px 渐变线 */}
+      {!isPinned && (
+        <div
+          className="sidebar-spine"
+          onClick={handleSpineClick}
+          onMouseEnter={handleMouseEnter}
+        />
+      )}
+
+      {/* 侧边栏面板 */}
       <aside
-        className="relative flex flex-col border-r-2 border-accent-muted/30 bg-glass-bg backdrop-blur-xl transition-all duration-200 overflow-hidden"
-        style={{ width: `${sidebarWidth}px` }}
+        className={`fixed top-0 left-0 z-50 h-screen flex flex-col border-r border-border-secondary bg-card-bg transition-all duration-500 ease-float overflow-hidden ${
+          isShowing ? 'rounded-r-[var(--radius-xl)] shadow-floating' : ''
+        }`}
+        style={{
+          width: `${sidebarWidth}px`,
+          transform: isShowing ? 'translateX(0)' : 'translateX(-100%)',
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         id="admin-sidebar"
       >
-        {/* Logo 区域 */}
-        <div className="flex h-16 items-center border-b-2 border-accent-muted/30 px-2 shrink-0">
-          {isTablet || collapsed ? (
-            <span className="mx-auto text-lg">📌</span>
-          ) : (
-            <h1 className="text-lg font-bold tracking-tight text-accent-primary">
-              Admin CMS
-            </h1>
-          )}
-        </div>
-
-        {/* 折叠按钮（仅笔记本/大屏显示） */}
-        {!isTablet && (
-          <button
-            onClick={toggle}
-            className="absolute top-2 right-2 z-20 p-1 rounded-md text-text-secondary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
-            aria-label={collapsed ? '展开侧边栏' : '收起侧边栏'}
-          >
-            {collapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
-          </button>
-        )}
-
-        {/* 导航菜单 */}
-        <nav className="mt-4 space-y-0.5 px-2 flex-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeItem === item.href;
-            return (
-              <a
-                key={item.href}
-                href={item.href}
-                className={`nav-link group flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-text-primary transition-all duration-normal hover:bg-accent-primary/10 hover:text-accent-primary ${
-                  isActive
-                    ? 'bg-glass-bg-active text-accent-primary border-l-2 border-accent-primary'
-                    : ''
-                } ${isTablet || collapsed ? 'justify-center' : ''}`}
-                onClick={isTablet ? handleIconClick : undefined}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                {(!isTablet && !collapsed) && (
-                  <span className="truncate">{item.label}</span>
+        {isShowing && (
+          <>
+            {/* Logo 区域 */}
+            <div className="flex h-16 items-center justify-between border-b border-border-secondary px-5 shrink-0">
+              <h1 className="text-lg font-semibold tracking-tight text-text-primary">
+                Paper Garden
+              </h1>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handlePinToggle}
+                  className="p-1.5 rounded-md text-text-tertiary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
+                  aria-label={isPinned ? '取消固定' : '固定侧边栏'}
+                  title={isPinned ? '取消固定' : '固定侧边栏'}
+                >
+                  {isPinned ? (
+                    <Pin className="h-4 w-4" />
+                  ) : (
+                    <PinOff className="h-4 w-4" />
+                  )}
+                </button>
+                {!isPinned && (
+                  <button
+                    onClick={() => setIsExpanded(false)}
+                    className="p-1.5 rounded-md text-text-tertiary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors"
+                    aria-label="收起侧栏"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
                 )}
-                {/* Tooltip（收起状态悬停显示） */}
-                {(isTablet || collapsed) && (
-                  <span className="absolute left-full ml-2 z-50 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-xs text-white whitespace-nowrap">
-                    {item.label}
-                  </span>
-                )}
-              </a>
-            );
-          })}
-        </nav>
+              </div>
+            </div>
 
-        {/* 平板弹出层 */}
-        {isTablet && popupVisible && (
-          <div
-            className="fixed inset-y-0 left-12 w-44 bg-glass-bg backdrop-blur-xl border-r-2 border-accent-muted/30 z-40 shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <nav className="mt-20 space-y-0.5 px-3">
+            {/* 导航菜单 */}
+            <nav className="mt-3 space-y-1 px-3 flex-1 overflow-y-auto">
               {navItems.map((item) => {
+                const Icon = item.icon;
                 const isActive = activeItem === item.href;
                 return (
                   <a
                     key={item.href}
                     href={item.href}
-                    className={`block rounded-lg px-3 py-2 text-sm font-medium text-text-primary transition-all hover:bg-accent-primary/10 hover:text-accent-primary ${
-                      isActive ? 'bg-glass-bg-active text-accent-primary' : ''
+                    className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-fast ${
+                      isActive
+                        ? 'bg-card-bg text-accent-primary border-l-[3px] border-accent-primary shadow-sm'
+                        : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary border-l-[3px] border-transparent'
                     }`}
                   >
-                    {item.label}
+                    <Icon className="h-5 w-5 shrink-0" strokeWidth={2} />
+                    <span className="truncate">{item.label}</span>
                   </a>
                 );
               })}
             </nav>
-          </div>
+
+            {/* 底部信息 */}
+            <div className="border-t border-border-secondary px-5 py-3 text-xs text-text-tertiary">
+              <span>Admin CMS v1.0</span>
+            </div>
+          </>
         )}
       </aside>
 
-      {/* 平板弹出层遮罩 */}
-      {isTablet && popupVisible && (
-        <div className="fixed inset-0 z-30 bg-black/20" onClick={() => setPopupVisible(false)} />
-      )}
+      {/* 主内容区偏移 */}
+      <div
+        className="transition-all duration-500 ease-float"
+        style={{ marginLeft: isPinned ? '260px' : '0px' }}
+      />
     </>
   );
 }
