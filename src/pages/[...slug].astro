@@ -1,0 +1,74 @@
+---
+/**
+ * @fileoverview 公开页面 SSR 端点
+ * @description 捕获非管理路由，查询数据库获取已发布页面并渲染内容
+ */
+
+import { db, pages } from '../lib/db';
+import { eq } from 'drizzle-orm';
+import MarkdownRenderer from '../components/MarkdownRenderer';
+import { highlightCode } from '../utils/highlight';
+
+// 排除管理路由和博客路由
+const EXCLUDED_PREFIXES = ['/admin', '/api', '/blog', '/_astro', '/uploads', '/favicon'];
+
+interface Props {
+  page: typeof pages.$inferSelect;
+}
+
+export async function getStaticPaths() {
+  // SSR 模式，不需要预渲染
+  return [];
+}
+
+const { slug } = Astro.params;
+
+// 排除管理路由
+if (!slug || EXCLUDED_PREFIXES.some(prefix => `/${slug}`.startsWith(prefix))) {
+  return Astro.redirect('/');
+}
+
+// 查询已发布的页面
+const page = await db.query.pages.findFirst({
+  where: eq(pages.slug, slug),
+});
+
+if (!page || page.status !== 'published') {
+  return Astro.redirect('/404');
+}
+
+const highlightedContent = await highlightCode(page.content);
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{page.seoTitle || page.title} | Pixel Verse</title>
+    {page.seoDescription && <meta name="description" content={page.seoDescription} />}
+  </head>
+  <body class="bg-bg text-text-primary">
+    <header class="border-b border-border-primary">
+      <nav class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-text-primary">Pixel Verse</a>
+        <div class="flex gap-4">
+          <a href="/blog/ssr" class="text-text-tertiary hover:text-text-primary">博客</a>
+          <a href="/admin" class="text-text-tertiary hover:text-text-primary">后台</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      <article class="prose prose-lg max-w-none">
+        <h1>{page.title}</h1>
+        <MarkdownRenderer content={highlightedContent} />
+      </article>
+    </main>
+
+    <footer class="border-t border-border-primary mt-16">
+      <div class="max-w-4xl mx-auto px-4 py-6 text-center text-text-tertiary text-sm">
+        &copy; {new Date().getFullYear()} Pixel Verse. All rights reserved.
+      </div>
+    </footer>
+  </body>
+</html>
