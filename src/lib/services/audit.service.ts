@@ -87,6 +87,7 @@ export const AuditActions = {
   PAGE_PUBLISHED: 'page.published',
   PAGE_UNPUBLISHED: 'page.unpublished',
   MEDIA_UPLOADED: 'media.uploaded',
+  MEDIA_UPDATED: 'media.updated',
   MEDIA_DELETED: 'media.deleted',
   CATEGORY_CREATED: 'category.created',
   CATEGORY_UPDATED: 'category.updated',
