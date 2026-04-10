@@ -1,8 +1,7 @@
 ---
 /**
- * @fileoverview 后台管理布局
- * @description 后台管理页面的通用布局 — Bento + Glassmorphism 风格
- * 侧边栏由 React 组件渲染，支持折叠/展开
+ * @fileoverview 后台管理布局 — Paper Garden
+ * @description 书脊式侧边栏 + 暖色调顶部栏
  */
 import '../styles/global.css';
 import SidebarMount from '@admin/components/layout/SidebarMount.astro';
@@ -19,7 +18,7 @@ import SidebarMount from '@admin/components/layout/SidebarMount.astro';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
-  <body class="h-screen overflow-hidden mesh-bg">
+  <body class="h-screen overflow-hidden bg-bg-primary">
     <div class="flex h-screen">
       <!-- 侧边栏 — React 组件渲染 -->
       <SidebarMount />
@@ -27,18 +26,18 @@ import SidebarMount from '@admin/components/layout/SidebarMount.astro';
       <!-- 主内容区 -->
       <div class="flex min-h-0 flex-1 flex-col">
         <!-- 头部 -->
-        <header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-glass-border bg-glass-bg px-6 backdrop-blur-xl">
+        <header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border-secondary bg-glass-bg/80 backdrop-blur-md px-6">
           <h2 class="text-lg font-semibold text-text-primary"><slot name="page-title" /></h2>
           <div class="flex items-center gap-4">
             <span class="text-sm text-text-secondary" id="admin-username"></span>
-            <button id="logout-btn" class="rounded-md bg-error/80 px-4 py-2 text-sm text-white backdrop-blur transition-all duration-normal hover:bg-error hover:scale-[1.02]">
+            <button id="logout-btn" class="rounded-md bg-error/80 px-4 py-2 text-sm text-white transition-all duration-normal hover:bg-error hover:scale-[1.02]">
               退出登录
             </button>
           </div>
         </header>
 
         <!-- 页面内容 -->
-        <main class="flex-1 min-h-0 overflow-auto p-6 glass-scrollbar page-content">
+        <main class="flex-1 min-h-0 overflow-auto p-6 page-content">
           <slot />
         </main>
       </div>
