@@ -80,6 +80,9 @@ export default {
           css: {
             maxWidth: 'none',
             color: 'var(--color-text-primary)',
+            strong: {
+              color: 'var(--color-text-primary)',
+            },
             a: {
               color: 'var(--color-accent-primary)',
               '&:hover': {
