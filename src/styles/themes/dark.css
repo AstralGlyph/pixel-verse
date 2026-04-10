@@ -1,130 +1,165 @@
 /**
  * 暗色主题 CSS 变量定义
- * 使用 OKLCH 色彩空间，深蓝底色 + 明亮强调色
+ * Paper Garden — 深暖灰底色 + 亮橄榄绿强调色
  */
 
 [data-theme="dark"],
 :root:not([data-theme]) {
-  /* === 颜色 === */
+  /* === 背景色 — 深暖灰，非冷蓝 === */
+  --color-bg-primary: oklch(14% 0.03 90);
+  --color-bg-secondary: oklch(18% 0.035 90);
+  --color-bg-tertiary: oklch(22% 0.04 90);
+  --color-bg-overlay: oklch(0% 0 0 / 0.7);
 
-  /* 背景色 — 极深蓝黑，深邃科技感 */
-  --color-bg-primary: oklch(10% 0.04 260);
-  --color-bg-secondary: oklch(14% 0.04 260);
-  --color-bg-tertiary: oklch(18% 0.05 260);
-  --color-bg-overlay: oklch(0% 0 0 / 0.9);
+  /* === 卡片层 === */
+  --color-card-bg: oklch(18% 0.035 90);
+  --color-card-bg-hover: oklch(22% 0.04 90);
 
-  /* 文本色 — 高对比 */
-  --color-text-primary: oklch(94% 0.02 260);
-  --color-text-secondary: oklch(76% 0.02 260);
-  --color-text-tertiary: oklch(68% 0.02 260);
-  --color-text-inverse: oklch(12% 0 0);
+  /* === 文本色 — 暖白 === */
+  --color-text-primary: oklch(92% 0.01 85);
+  --color-text-secondary: oklch(75% 0.015 85);
+  --color-text-tertiary: oklch(60% 0.012 85);
+  --color-text-inverse: oklch(14% 0.03 90);
 
-  /* 强调色 — 高亮度薄荷绿，AAA 级对比度 */
-  --color-accent-primary: oklch(76% 0.18 155);
-  --color-accent-secondary: oklch(80% 0.16 150);
-  --color-accent-muted: oklch(60% 0.15 155);
-  --color-accent-hover: oklch(82% 0.14 148);
+  /* === 强调色 — 亮橄榄绿 + 暖陶土 === */
+  --color-accent-primary: oklch(62% 0.14 132);
+  --color-accent-secondary: oklch(68% 0.16 50);
+  --color-accent-muted: oklch(50% 0.1 132);
+  --color-accent-hover: oklch(68% 0.15 132);
 
-  /* 语义色 — 高饱和 */
-  --color-success: oklch(58% 0.26 145);
-  --color-warning: oklch(68% 0.2 85);
-  --color-error: oklch(54% 0.26 25);
-  --color-info: oklch(58% 0.24 230);
+  /* === 语义色 === */
+  --color-success: oklch(64% 0.16 145);
+  --color-warning: oklch(75% 0.16 80);
+  --color-error: oklch(58% 0.2 25);
+  --color-info: oklch(64% 0.16 230);
 
-  /* 边框色 */
-  --color-border-primary: oklch(35% 0.05 260);
-  --color-border-secondary: oklch(22% 0.05 260);
-  --color-border-focus: oklch(55% 0.32 260);
+  /* === 边框色 === */
+  --color-border-primary: oklch(32% 0.04 90);
+  --color-border-secondary: oklch(26% 0.035 90);
+  --color-border-focus: oklch(62% 0.14 132);
+  --color-border-accent: oklch(62% 0.14 132);
 
-  /* 阴影 — 深色带蓝紫色调 */
-  --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.5);
-  --shadow-md: 0 4px 6px -1px oklch(10% 0.05 260 / 0.6);
-  --shadow-lg: 0 10px 15px -3px oklch(10% 0.05 260 / 0.65);
-  --shadow-xl: 0 20px 25px -5px oklch(10% 0.05 260 / 0.7);
+  /* === 阴影 — 深色柔和阴影 === */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.3);
+  --shadow-md: 0 2px 4px oklch(0% 0 0 / 0.35), 0 4px 8px oklch(0% 0 0 / 0.25);
+  --shadow-lg: 0 4px 8px oklch(0% 0 0 / 0.4), 0 12px 24px oklch(0% 0 0 / 0.3);
+  --shadow-xl: 0 8px 16px oklch(0% 0 0 / 0.45), 0 24px 48px oklch(0% 0 0 / 0.35);
 
-  /* === 玻璃拟态 — 极深底色 + 高饱和电光边框 === */
-  --glass-bg: oklch(12% 0.04 260 / 0.95);
-  --glass-bg-subtle: oklch(16% 0.04 260 / 0.92);
-  --glass-bg-hover: oklch(20% 0.05 260 / 0.95);
-  --glass-bg-active: oklch(24% 0.1 260 / 0.93);
-  --glass-border: oklch(45% 0.15 260 / 0.65);
-  --glass-border-subtle: oklch(38% 0.1 260 / 0.52);
-  --glass-border-focus: oklch(55% 0.32 260 / 0.6);
-  --glass-blur: blur(20px);
-  --glass-blur-xl: blur(28px);
-  --glass-shadow: 0 4px 24px oklch(10% 0.05 260 / 0.6);
-  --glass-shadow-lg: 0 8px 40px oklch(10% 0.05 260 / 0.7);
-  --glass-shadow-inset: inset 0 1px 0 oklch(100% 0 0 / 0.1);
+  /* === 卡片阴影 === */
+  --shadow-card: 0 2px 4px oklch(0% 0 0 / 0.3),
+                 0 8px 16px oklch(0% 0 0 / 0.25),
+                 0 1px 3px oklch(0% 0 0 / 0.15);
+  --shadow-card-hover: 0 4px 8px oklch(0% 0 0 / 0.35),
+                       0 16px 32px oklch(0% 0 0 / 0.3),
+                       0 2px 6px oklch(0% 0 0 / 0.2);
+  --shadow-floating: 0 8px 32px oklch(0% 0 0 / 0.4),
+                     0 24px 48px oklch(0% 0 0 / 0.35),
+                     0 4px 12px oklch(0% 0 0 / 0.25);
 
-  /* === Bento 圆角 === */
+  /* === 玻璃拟态 — 深暖灰 === */
+  --glass-bg: oklch(18% 0.035 90 / 0.92);
+  --glass-bg-subtle: oklch(22% 0.04 90 / 0.88);
+  --glass-bg-hover: oklch(26% 0.045 90 / 0.92);
+  --glass-bg-active: oklch(30% 0.06 90 / 0.9);
+  --glass-border: oklch(32% 0.04 90 / 0.65);
+  --glass-border-subtle: oklch(28% 0.035 90 / 0.5);
+  --glass-border-focus: oklch(62% 0.14 132 / 0.5);
+  --glass-blur: blur(16px);
+  --glass-blur-xl: blur(24px);
+  --glass-shadow: 0 2px 8px oklch(0% 0 0 / 0.3);
+  --glass-shadow-lg: 0 8px 32px oklch(0% 0 0 / 0.4);
+  --glass-shadow-inset: inset 0 1px 0 oklch(100% 0 0 / 0.06);
+
+  /* === 圆角 === */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 32px;
 
-  /* === 渐变 — 极高饱和电光蓝紫渐变 === */
-  --gradient-primary: linear-gradient(135deg, oklch(48% 0.32 260), oklch(42% 0.3 280));
-  --gradient-accent: linear-gradient(135deg, oklch(48% 0.32 260), oklch(50% 0.28 290));
-  --gradient-subtle: linear-gradient(135deg, oklch(14% 0.05 260), oklch(16% 0.06 270));
-  --gradient-card-bg: linear-gradient(180deg, oklch(16% 0.05 260 / 0.97), oklch(12% 0.05 260 / 0.98));
-  --mesh-gradient: radial-gradient(ellipse at 20% 50%, oklch(34% 0.22 260 / 0.3) 0%, transparent 50%),
-                   radial-gradient(ellipse at 80% 20%, oklch(38% 0.2 280 / 0.25) 0%, transparent 50%),
-                   radial-gradient(ellipse at 50% 80%, oklch(36% 0.24 240 / 0.2) 0%, transparent 50%);
+  /* === 渐变 === */
+  --gradient-primary: linear-gradient(135deg, oklch(62% 0.14 132), oklch(55% 0.12 145));
+  --gradient-accent: linear-gradient(135deg, oklch(62% 0.14 132), oklch(68% 0.16 50));
+  --gradient-subtle: linear-gradient(135deg, oklch(18% 0.035 90), oklch(22% 0.04 90));
+  --gradient-card-bg: linear-gradient(180deg, oklch(18% 0.035 90), oklch(16% 0.035 90));
+  --mesh-gradient: radial-gradient(ellipse at 20% 50%, oklch(24% 0.06 132 / 0.25) 0%, transparent 50%),
+                   radial-gradient(ellipse at 80% 20%, oklch(26% 0.07 50 / 0.2) 0%, transparent 50%),
+                   radial-gradient(ellipse at 50% 80%, oklch(20% 0.04 90 / 0.2) 0%, transparent 50%);
 
   /* === 动画 === */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-paper: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  --ease-float: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 350ms;
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
 }
 
 /* 跟随系统暗色模式 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --color-bg-primary: oklch(10% 0.04 260);
-    --color-bg-secondary: oklch(14% 0.04 260);
-    --color-bg-tertiary: oklch(18% 0.05 260);
-    --color-bg-overlay: oklch(0% 0 0 / 0.9);
-    --color-text-primary: oklch(94% 0.02 260);
-    --color-text-secondary: oklch(76% 0.02 260);
-    --color-text-tertiary: oklch(68% 0.02 260);
-    --color-text-inverse: oklch(12% 0 0);
-    --color-accent-primary: oklch(76% 0.18 155);
-    --color-accent-secondary: oklch(80% 0.16 150);
-    --color-accent-muted: oklch(60% 0.15 155);
-    --color-accent-hover: oklch(82% 0.14 148);
-    --color-border-primary: oklch(35% 0.05 260);
-    --color-border-secondary: oklch(22% 0.05 260);
-    --glass-bg: oklch(12% 0.04 260 / 0.95);
-    --glass-bg-subtle: oklch(16% 0.04 260 / 0.92);
-    --glass-bg-hover: oklch(20% 0.05 260 / 0.95);
-    --glass-bg-active: oklch(24% 0.1 260 / 0.93);
-    --glass-border: oklch(45% 0.15 260 / 0.65);
-    --glass-border-subtle: oklch(38% 0.1 260 / 0.52);
-    --glass-border-focus: oklch(55% 0.32 260 / 0.6);
-    --glass-blur: blur(20px);
-    --glass-blur-xl: blur(28px);
-    --glass-shadow: 0 4px 24px oklch(10% 0.05 260 / 0.6);
-    --glass-shadow-lg: 0 8px 40px oklch(10% 0.05 260 / 0.7);
-    --glass-shadow-inset: inset 0 1px 0 oklch(100% 0 0 / 0.1);
+    --color-bg-primary: oklch(14% 0.03 90);
+    --color-bg-secondary: oklch(18% 0.035 90);
+    --color-bg-tertiary: oklch(22% 0.04 90);
+    --color-bg-overlay: oklch(0% 0 0 / 0.7);
+    --color-card-bg: oklch(18% 0.035 90);
+    --color-card-bg-hover: oklch(22% 0.04 90);
+    --color-text-primary: oklch(92% 0.01 85);
+    --color-text-secondary: oklch(75% 0.015 85);
+    --color-text-tertiary: oklch(60% 0.012 85);
+    --color-text-inverse: oklch(14% 0.03 90);
+    --color-accent-primary: oklch(62% 0.14 132);
+    --color-accent-secondary: oklch(68% 0.16 50);
+    --color-accent-muted: oklch(50% 0.1 132);
+    --color-accent-hover: oklch(68% 0.15 132);
+    --color-success: oklch(64% 0.16 145);
+    --color-warning: oklch(75% 0.16 80);
+    --color-error: oklch(58% 0.2 25);
+    --color-info: oklch(64% 0.16 230);
+    --color-border-primary: oklch(32% 0.04 90);
+    --color-border-secondary: oklch(26% 0.035 90);
+    --color-border-focus: oklch(62% 0.14 132);
+    --color-border-accent: oklch(62% 0.14 132);
+    --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.3);
+    --shadow-md: 0 2px 4px oklch(0% 0 0 / 0.35), 0 4px 8px oklch(0% 0 0 / 0.25);
+    --shadow-lg: 0 4px 8px oklch(0% 0 0 / 0.4), 0 12px 24px oklch(0% 0 0 / 0.3);
+    --shadow-xl: 0 8px 16px oklch(0% 0 0 / 0.45), 0 24px 48px oklch(0% 0 0 / 0.35);
+    --shadow-card: 0 2px 4px oklch(0% 0 0 / 0.3), 0 8px 16px oklch(0% 0 0 / 0.25), 0 1px 3px oklch(0% 0 0 / 0.15);
+    --shadow-card-hover: 0 4px 8px oklch(0% 0 0 / 0.35), 0 16px 32px oklch(0% 0 0 / 0.3), 0 2px 6px oklch(0% 0 0 / 0.2);
+    --shadow-floating: 0 8px 32px oklch(0% 0 0 / 0.4), 0 24px 48px oklch(0% 0 0 / 0.35), 0 4px 12px oklch(0% 0 0 / 0.25);
+    --glass-bg: oklch(18% 0.035 90 / 0.92);
+    --glass-bg-subtle: oklch(22% 0.04 90 / 0.88);
+    --glass-bg-hover: oklch(26% 0.045 90 / 0.92);
+    --glass-bg-active: oklch(30% 0.06 90 / 0.9);
+    --glass-border: oklch(32% 0.04 90 / 0.65);
+    --glass-border-subtle: oklch(28% 0.035 90 / 0.5);
+    --glass-border-focus: oklch(62% 0.14 132 / 0.5);
+    --glass-blur: blur(16px);
+    --glass-blur-xl: blur(24px);
+    --glass-shadow: 0 2px 8px oklch(0% 0 0 / 0.3);
+    --glass-shadow-lg: 0 8px 32px oklch(0% 0 0 / 0.4);
+    --glass-shadow-inset: inset 0 1px 0 oklch(100% 0 0 / 0.06);
     --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-2xl: 24px;
-    --gradient-primary: linear-gradient(135deg, oklch(48% 0.32 260), oklch(42% 0.3 280));
-    --gradient-accent: linear-gradient(135deg, oklch(48% 0.32 260), oklch(50% 0.28 290));
-    --gradient-subtle: linear-gradient(135deg, oklch(14% 0.05 260), oklch(16% 0.06 270));
-    --gradient-card-bg: linear-gradient(180deg, oklch(16% 0.05 260 / 0.97), oklch(12% 0.05 260 / 0.98));
-    --mesh-gradient: radial-gradient(ellipse at 20% 50%, oklch(34% 0.22 260 / 0.3) 0%, transparent 50%),
-                     radial-gradient(ellipse at 80% 20%, oklch(38% 0.2 280 / 0.25) 0%, transparent 50%),
-                     radial-gradient(ellipse at 50% 80%, oklch(36% 0.24 240 / 0.2) 0%, transparent 50%);
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-2xl: 32px;
+    --gradient-primary: linear-gradient(135deg, oklch(62% 0.14 132), oklch(55% 0.12 145));
+    --gradient-accent: linear-gradient(135deg, oklch(62% 0.14 132), oklch(68% 0.16 50));
+    --gradient-subtle: linear-gradient(135deg, oklch(18% 0.035 90), oklch(22% 0.04 90));
+    --gradient-card-bg: linear-gradient(180deg, oklch(18% 0.035 90), oklch(16% 0.035 90));
+    --mesh-gradient: radial-gradient(ellipse at 20% 50%, oklch(24% 0.06 132 / 0.25) 0%, transparent 50%),
+                     radial-gradient(ellipse at 80% 20%, oklch(26% 0.07 50 / 0.2) 0%, transparent 50%),
+                     radial-gradient(ellipse at 50% 80%, oklch(20% 0.04 90 / 0.2) 0%, transparent 50%);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-paper: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+    --ease-float: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-    --duration-fast: 150ms;
-    --duration-normal: 250ms;
-    --duration-slow: 350ms;
+    --duration-instant: 100ms;
+    --duration-fast: 200ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
   }
 }
