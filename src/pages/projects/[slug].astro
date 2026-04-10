@@ -16,7 +16,7 @@ const response = await fetch(`${API_URL}/api/projects/${slug}`, {
 });
 
 if (!response.ok) {
-  throw Astro.error(404, 'Project not found');
+  return new Response(null, { status: 404 });
 }
 
 const data = await response.json();
