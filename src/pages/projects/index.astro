@@ -1,0 +1,75 @@
+---
+/**
+ * @fileoverview 项目展示页
+ * @description 从 API 获取已发布项目并展示
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+import ProjectCard from '@components/layout/ProjectCard/ProjectCard.astro';
+
+const API_URL = import.meta.env.PUBLIC_API_URL || '';
+const response = await fetch(`${API_URL}/api/projects`, {
+  credentials: 'include',
+});
+
+let projects: Array<{
+  id: string;
+  title: string;
+  description: string;
+  tags: Array<{ id: string; name: string }>;
+  demoUrl?: string;
+  sourceUrl?: string;
+  coverImageId?: string;
+  featured: number;
+  slug: string;
+}> = [];
+
+if (response.ok) {
+  const data = await response.json();
+  projects = data.data || [];
+}
+---
+
+<BaseLayout title="项目" description="浏览我的开源项目和作品">
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* 页面标题 */}
+      <div class="mb-12">
+        <h1 class="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+          项目
+        </h1>
+        <p class="text-text-secondary">
+          我的开源项目和作品展示
+        </p>
+      </div>
+
+      {/* 项目网格 */}
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {projects.map((project) => (
+          <a href={`/projects/${project.slug}`} class="block">
+            <ProjectCard
+              title={project.title}
+              description={project.description || ''}
+              tags={project.tags.map((t) => t.name)}
+              demoUrl={project.demoUrl}
+              sourceUrl={project.sourceUrl}
+              featured={project.featured === 1}
+            />
+          </a>
+        ))}
+      </div>
+
+      {projects.length === 0 && (
+        <div class="text-center py-12 text-text-tertiary">
+          <p>暂无项目</p>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>
