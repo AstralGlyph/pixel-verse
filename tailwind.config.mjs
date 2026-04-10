@@ -87,7 +87,7 @@ export default {
               },
             },
             code: {
-              color: 'var(--color-text-primary)',
+              color: 'var(--color-accent-primary)',
               backgroundColor: 'var(--color-bg-tertiary)',
               borderRadius: '0.25rem',
               padding: '0.125rem 0.25rem',
