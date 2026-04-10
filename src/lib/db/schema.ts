@@ -228,6 +228,7 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
 
 export const tagsRelations = relations(tags, ({ many }) => ({
   postTags: many(postTags),
+  projectTags: many(projectTags),
 }));
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
