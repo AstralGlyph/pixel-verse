@@ -78,7 +78,7 @@ export default function SettingsPage() {
         body: JSON.stringify({ currentPassword, newPassword }),
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setSuccess('密码已修改');
         setCurrentPassword('');
         setNewPassword('');
