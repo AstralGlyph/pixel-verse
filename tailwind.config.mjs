@@ -78,7 +78,7 @@ export default {
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            maxWidth: '65ch',
+            maxWidth: 'none',
             color: 'var(--color-text-primary)',
             a: {
               color: 'var(--color-accent-primary)',
@@ -87,7 +87,7 @@ export default {
               },
             },
             code: {
-              color: 'var(--color-accent-primary)',
+              color: 'var(--color-text-primary)',
               backgroundColor: 'var(--color-bg-tertiary)',
               borderRadius: '0.25rem',
               padding: '0.125rem 0.25rem',
