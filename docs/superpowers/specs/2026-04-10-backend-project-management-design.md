@@ -154,8 +154,9 @@ stateDiagram-v2
 
 - **触发时机**：用户访问项目详情页 `GET /projects/[slug]` 时调用 `POST /api/projects/:slug/view`
 - **实现方式**：前端在页面 `onMount` 或 `useEffect` 中发送一次 view 请求，不阻塞页面渲染
-- **防刷策略**：使用 `localStorage` 标记，同一用户在 5 分钟内重复访问不重复计数
-- **API 行为**：`incrementViewCount(id)` 执行 `UPDATE projects SET view_count = view_count + 1 WHERE id = ?`，不记录审计日志
+- **防刷策略**：后端基于 IP 去重，同一 IP 24 小时内对同一项目仅计一次（使用 SQLite 轻量缓存表或内存 Set）
+- **写入策略**：异步写入，view API 快速返回（不阻塞页面渲染），view_count 更新在后台完成
+- **API 行为**：检查 IP + 项目 ID + 时间窗口，未命中则 `UPDATE projects SET view_count = view_count + 1 WHERE id = ?`
 - **前台展示**：项目详情页可选择显示浏览次数（与文章保持一致的展示风格）
 
 ---
