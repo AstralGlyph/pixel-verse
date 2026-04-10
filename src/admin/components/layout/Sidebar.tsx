@@ -140,12 +140,6 @@ export function Sidebar() {
           </>
         )}
       </aside>
-
-      {/* 主内容区偏移 */}
-      <div
-        className="transition-all duration-500 ease-float"
-        style={{ marginLeft: `${sidebarWidth}px` }}
-      />
     </>
   );
 }
