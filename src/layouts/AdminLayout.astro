@@ -30,7 +30,7 @@ import SidebarMount from '@admin/components/layout/SidebarMount.astro';
           <h2 class="text-lg font-semibold text-text-primary"><slot name="page-title" /></h2>
           <div class="flex items-center gap-4">
             <span class="text-sm text-text-secondary" id="admin-username"></span>
-            <button id="logout-btn" class="rounded-md bg-error/80 px-4 py-2 text-sm text-white transition-all duration-normal hover:bg-error hover:scale-[1.02]">
+            <button id="logout-btn" class="rounded-md bg-error px-4 py-2 text-sm text-white shadow-sm transition-all duration-fast ease-smooth hover:-translate-y-[1px] hover:shadow-md active:translate-y-0 active:shadow-sm">
               退出登录
             </button>
           </div>
