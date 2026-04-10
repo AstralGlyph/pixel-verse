@@ -102,7 +102,7 @@
     /* 不支持 oklch 的浏览器 fallback */
     background-color: rgb(25, 20, 45) !important;
     color: rgb(220, 225, 240) !important;
-    border-color: rgb(50, 50, 80) !important;
+    border-color: rgb(65, 65, 95) !important;
 
     /* 现代浏览器：极光渐变 + 动画 */
     background: linear-gradient(
@@ -115,7 +115,7 @@
     background-size: 300% 300% !important;
     animation: aurora-flow 12s ease infinite !important;
     color: oklch(94% 0.02 260) !important;
-    border-color: oklch(22% 0.06 260) !important;
+    border-color: oklch(35% 0.06 260) !important;
 
     border-radius: 0.5rem;
     padding: 1em;
