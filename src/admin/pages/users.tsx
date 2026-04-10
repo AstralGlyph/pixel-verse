@@ -194,7 +194,7 @@ export default function UsersPage() {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2 text-white rounded-md shadow-glass shadow-sm hover:scale-[1.02] transition-all duration-normal ease-spring"
+          className="flex items-center gap-2 px-4 py-2 text-white rounded-md shadow-sm hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
           style={{ background: 'var(--gradient-primary)' }}
         >
           <UserPlus size={18} />
@@ -330,7 +330,7 @@ export default function UsersPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white rounded-md hover:scale-[1.02] transition-all duration-normal ease-spring"
+                  className="px-4 py-2 text-white rounded-md hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
                   style={{ background: 'var(--gradient-primary)' }}
                 >
                   创建
@@ -374,7 +374,7 @@ export default function UsersPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-warning/90 text-white rounded-md hover:bg-warning hover:scale-[1.02] transition-all duration-normal ease-spring"
+                  className="px-4 py-2 bg-warning/90 text-white rounded-md hover:bg-warning hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
                 >
                   重置密码
                 </button>

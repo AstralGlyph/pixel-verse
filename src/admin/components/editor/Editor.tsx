@@ -482,12 +482,12 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
   );
 
   return (
-    <div ref={editorContainerRef} className="relative rounded-xl overflow-hidden glass-card shadow-glass-lg">
+    <div ref={editorContainerRef} className="relative rounded-xl overflow-hidden glass-card">
       {/* ===== 气泡菜单 — 选中文本时弹出 ===== */}
       {bubbleMenuVisible && (
         <div
           style={bubbleMenuStyle}
-          className="flex items-center gap-0.5 rounded-xl border border-glass-border bg-glass-bg-subtle backdrop-blur px-1.5 py-1 shadow-glass animate-in"
+          className="flex items-center gap-0.5 rounded-xl border border-border-secondary bg-bg-secondary px-1.5 py-1 animate-in"
         >
           <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={isActive('bold')} icon={Bold} title="粗体" />
           <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={isActive('italic')} icon={Italic} title="斜体" />
@@ -526,7 +526,7 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
       {floatingMenuVisible && (
         <div
           style={floatingMenuStyle}
-          className="flex flex-col gap-0.5 rounded-xl border border-glass-border bg-glass-bg-subtle backdrop-blur p-1.5 shadow-glass animate-in"
+          className="flex flex-col gap-0.5 rounded-xl border border-border-secondary bg-bg-secondary p-1.5 animate-in"
         >
           {([1, 2, 3] as const).map((level) => (
             <button

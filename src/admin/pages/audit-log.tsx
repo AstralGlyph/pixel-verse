@@ -165,7 +165,7 @@ export default function AuditLogPage() {
             <div className="flex items-end gap-2">
               <button
                 onClick={handleFilter}
-                className="px-4 py-2 text-white rounded-md hover:scale-[1.02] transition-all duration-normal ease-spring"
+                className="px-4 py-2 text-white rounded-md hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
                 style={{ background: 'var(--gradient-primary)' }}
               >
                 应用
