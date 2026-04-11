@@ -8,7 +8,11 @@
     "build": "astro check && astro build",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
-    "start": "node scripts/dev.mjs",
+    "start": "node ./dist/server/entry.mjs",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "db:seed": "node scripts/db-seed.mjs",
+    "db:reset": "rm -f data/cms.db && node scripts/db-migrate.mjs && node scripts/db-seed.mjs",
+    "postinstall": "node scripts/build-native.mjs",
     "lint": "eslint src --ext .ts,.tsx,.astro",
     "format": "prettier --write \"src/**/*.{ts,tsx,astro,mdx,css,json}\""
   },

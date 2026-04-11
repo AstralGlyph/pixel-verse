@@ -6,7 +6,7 @@
 
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { hash } from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import path from 'path';
 import fs from 'fs';
 import { randomUUID } from 'crypto';
@@ -74,7 +74,7 @@ const existingUser = sqlite.prepare('SELECT id FROM users WHERE username = ?').g
 if (existingUser) {
   console.log(`⚠️  用户 "${adminUsername}" 已存在，跳过创建`);
 } else {
-  const passwordHash = await hash(adminPassword, 10);
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
   const superAdminRole = sqlite.prepare('SELECT id FROM roles WHERE name = ?').get('super_admin');
 
   if (!superAdminRole) {

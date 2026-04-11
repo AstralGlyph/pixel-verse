@@ -17,14 +17,25 @@
 - Node.js >= 20 LTS
 - pnpm >= 9
 
-### 安装
+### 方式一：一键安装（推荐）
+
+```bash
+# 克隆仓库
+git clone https://github.com/AstralGlyph/pixel-verse.git
+cd pixel-verse
+
+# 一键安装：检查环境、安装依赖、配置环境变量、初始化数据库
+bash setup.sh
+```
+
+### 方式二：手动安装
 
 ```bash
 # 1. 克隆仓库
 git clone https://github.com/AstralGlyph/pixel-verse.git
 cd pixel-verse
 
-# 2. 安装依赖
+# 2. 安装依赖（自动编译原生模块）
 pnpm install
 
 # 3. 配置环境变量
@@ -32,16 +43,24 @@ cp .env.example .env.local
 # 编辑 .env.local，修改数据库路径和管理员账号
 
 # 4. 初始化数据库
-node scripts/db-migrate.mjs
+pnpm db:migrate
 
 # 5. 插入种子数据（可选）
-node scripts/db-seed.mjs
+pnpm db:seed
 
 # 6. 启动开发服务器
 pnpm dev
 ```
 
 访问 http://localhost:4321 查看效果。管理员后台访问 http://localhost:4321/admin。
+
+### 重置数据库
+
+如需完全重置数据库（删除旧数据 + 重新初始化）：
+
+```bash
+pnpm db:reset
+```
 
 ## ⚙️ 配置说明
 
@@ -104,12 +123,14 @@ pixel-verse/
 | `pnpm build` | 构建生产版本 |
 | `pnpm preview` | 预览生产构建 |
 | `pnpm start` | 启动生产服务器 |
+| `pnpm db:migrate` | 创建/更新数据库表 |
+| `pnpm db:seed` | 插入种子数据（角色、管理员、分类、标签） |
+| `pnpm db:reset` | 重置数据库（删除重建 + 种子数据） |
 | `pnpm test` | 运行单元测试 |
 | `pnpm test:e2e` | 运行 E2E 测试 |
 | `pnpm lint` | 运行代码检查 |
 | `pnpm format` | 格式化代码 |
-| `node scripts/db-migrate.mjs` | 数据库迁移 |
-| `node scripts/db-seed.mjs` | 插入种子数据 |
+| `bash setup.sh` | 一键安装初始化（依赖 + 配置 + 数据库） |
 
 ## 🚢 部署
 
@@ -123,11 +144,14 @@ pixel-verse/
 ### 自托管部署
 
 ```bash
-# 构建生产版本
-pnpm build
+# 安装依赖并初始化
+pnpm install
+pnpm db:migrate
+pnpm db:seed
 
-# 启动服务
-node scripts/dev.mjs
+# 构建并启动
+pnpm build
+pnpm start
 ```
 
 推荐使用 PM2 或 systemd 管理服务进程。
