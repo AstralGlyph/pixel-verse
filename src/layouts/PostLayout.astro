@@ -1,0 +1,169 @@
+---
+/**
+ * @fileoverview PostLayout 文章页布局
+ * @description 文章详情页布局，包含阅读进度条、目录导航等
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+import TOC from '@components/layout/TOC';
+import { formatArticleDate } from '@utils/date';
+import { getReadingTimeInfo } from '@utils/reading-time';
+import type { BlogFrontmatter } from '@content/schema';
+
+export interface Props {
+  /** 文章 frontmatter */
+  frontmatter: BlogFrontmatter;
+  /** 文章内容（用于计算阅读时间） */
+  content?: string;
+  /** 文章标题列表（用于目录） */
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+}
+
+const { frontmatter, content = '', headings = [] } = Astro.props;
+
+// 处理日期
+const { published, updated } = formatArticleDate(
+  frontmatter.publishedAt,
+  frontmatter.updatedAt
+);
+
+// 计算阅读时间
+const readingTime = getReadingTimeInfo(content, frontmatter.readingTime);
+
+// 转换标题格式给 TOC 组件
+const tocHeadings = headings.map((h) => ({
+  level: h.depth,
+  slug: h.slug,
+  text: h.text,
+}));
+---
+
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  showReadingProgress
+>
+  <Header slot="header" />
+
+  <article class="w-full px-4 sm:px-6 lg:px-8 py-12 overflow-x-auto">
+    <div class="max-w-5xl mx-auto">
+      <!-- 文章头部 -->
+      <header class="mb-12">
+        <!-- 分类 -->
+        <div class="mb-4">
+          <span class="text-sm text-accent font-medium">{frontmatter.category}</span>
+        </div>
+
+        <!-- 标题 -->
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary leading-tight mb-6">
+          {frontmatter.title}
+        </h1>
+
+        <!-- 描述 -->
+        <p class="text-lg text-text-secondary mb-6">
+          {frontmatter.description}
+        </p>
+
+        <!-- 元信息 -->
+        <div class="flex flex-wrap items-center gap-4 text-sm text-text-tertiary">
+          <!-- 发布日期 -->
+          <time datetime={String(frontmatter.publishedAt)}>
+            {published}
+          </time>
+
+          <!-- 更新日期 -->
+          {updated && (
+            <span>
+              <span class="mx-2">·</span>
+              更新于 {updated}
+            </span>
+          )}
+
+          <!-- 阅读时间 -->
+          <span>
+            <span class="mx-2">·</span>
+            {readingTime.display}
+          </span>
+        </div>
+
+        <!-- 标签 -->
+        {frontmatter.tags && frontmatter.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-6">
+            {frontmatter.tags.map((tag: string) => (
+              <span class="px-3 py-1 text-xs bg-bg-tertiary text-text-secondary rounded-full">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <!-- 文章内容区 -->
+      <div class="prose prose-lg dark:prose-invert max-w-none mb-16">
+        <slot />
+      </div>
+    </div>
+  </article>
+
+  <!-- 目录导航（全端统一） -->
+  <TOC headings={tocHeadings} defaultExpanded={true} showOnMobile client:load />
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  /* 排版优化 */
+  .prose :global(h2) {
+    @apply mt-12 mb-6 text-2xl font-bold text-text-primary;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(h3) {
+    @apply mt-8 mb-4 text-xl font-semibold text-text-primary;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(h4) {
+    @apply mt-6 mb-3 text-lg font-medium text-text-primary;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(p) {
+    @apply mb-4 leading-relaxed;
+  }
+
+  .prose :global(a) {
+    @apply text-accent hover:underline;
+  }
+
+  .prose :global(code) {
+    @apply px-1.5 py-0.5 bg-bg-tertiary rounded text-sm font-mono;
+  }
+
+  .prose :global(pre) {
+    @apply my-6 p-4 bg-bg-secondary rounded-lg overflow-x-auto;
+  }
+
+  .prose :global(pre code) {
+    @apply p-0 bg-transparent;
+  }
+
+  .prose :global(blockquote) {
+    @apply my-6 pl-4 border-l-4 border-accent italic text-text-secondary;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    @apply my-4 pl-6;
+  }
+
+  .prose :global(li) {
+    @apply mb-2;
+  }
+
+  .prose :global(img) {
+    @apply my-8 rounded-lg;
+  }
+</style>

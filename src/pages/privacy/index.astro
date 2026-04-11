@@ -1,0 +1,90 @@
+---
+/**
+ * @fileoverview 隐私政策页
+ * @description 说明 PixelVerse 博客如何收集和使用用户数据
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+---
+
+<BaseLayout title="隐私政策" description="PixelVerse 博客的隐私政策说明">
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 class="text-3xl sm:text-4xl font-bold text-text-primary mb-8">
+        隐私政策
+      </h1>
+
+      <div class="prose prose-invert max-w-none">
+        <p class="text-text-secondary mb-6">
+          最后更新：2026 年 4 月 1 日
+        </p>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-text-primary mb-4">1. 概述</h2>
+          <p class="text-text-secondary">
+            PixelVerse 是一个个人博客系统，致力于保护访问者的隐私。本隐私政策说明我们如何收集、使用和保护你的信息。
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-text-primary mb-4">2. 我们收集的信息</h2>
+          <p class="text-text-secondary mb-4">
+            本网站仅收集最低限度的必要信息：
+          </p>
+          <ul class="list-disc list-inside text-text-secondary space-y-2">
+            <li><strong>本地存储数据</strong>：主题偏好、字体大小、阅读模式设置等，仅存储在你的浏览器中</li>
+            <li><strong>阅读量统计</strong>：匿名计数，不关联个人身份信息</li>
+            <li><strong>评论系统</strong>：如使用 Giscus，遵循 GitHub 的隐私政策</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-text-primary mb-4">3. Cookie 和本地存储</h2>
+          <p class="text-text-secondary mb-4">
+            我们使用浏览器本地存储来记住你的偏好设置：
+          </p>
+          <ul class="list-disc list-inside text-text-secondary space-y-2">
+            <li>主题模式（暗色/亮色/跟随系统）</li>
+            <li>字体大小偏好</li>
+            <li>阅读模式状态</li>
+            <li>文章反应（点赞等）</li>
+          </ul>
+          <p class="text-text-secondary mt-4">
+            这些数据仅存储在你的设备上，不会传输到任何服务器。
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-text-primary mb-4">4. 第三方服务</h2>
+          <p class="text-text-secondary mb-4">
+            本网站可能使用以下第三方服务：
+          </p>
+          <ul class="list-disc list-inside text-text-secondary space-y-2">
+            <li><strong>Giscus</strong>：基于 GitHub 的评论系统，遵循其隐私政策</li>
+            <li><strong>Pagefind</strong>：静态站点搜索，所有搜索均在本地执行</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-text-primary mb-4">5. 数据安全</h2>
+          <p class="text-text-secondary">
+            本网站为静态站点，不存储任何个人数据。所有内容均为静态文件，通过 CDN 分发。
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-text-primary mb-4">6. 联系我们</h2>
+          <p class="text-text-secondary">
+            如果你对本隐私政策有任何疑问，请通过网站上的社交链接联系我。
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

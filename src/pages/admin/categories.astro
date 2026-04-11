@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台分类管理页面（SSR）
+ * @description 渲染 React 分类管理组件，受认证中间件保护
+ */
+
+import { CategoriesPage } from '../../admin/pages/categories';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="分类管理">
+  <CategoriesPage client:load />
+</AdminLayout>

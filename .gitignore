@@ -1,32 +1,69 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+# Dependencies
+node_modules/
+.pnpm-store/
 
-# Test binary, built with `go test -c`
-*.test
+# Build output
+dist/
+.astro/
+build/
 
-# Code coverage profiles and other test artifacts
-*.out
-coverage.*
-*.coverprofile
-profile.cov
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
-go.work
-go.work.sum
-
-# env file
+# Environment
 .env
+.env.*
+!.env.example
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+
+# Misc
+*.local
+.temp/
+.tmp/
+
+# Database
+data/
+
+# Development tool directories
+.playwright-mcp/
+.superbrains/
+.superpowers/
+.specify/
+
+# Development screenshots
+*.png
+!public/**/*.png
+
+# Development scripts
+debug-preview.cjs
+*.bak
+*.bak2

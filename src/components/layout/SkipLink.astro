@@ -1,0 +1,40 @@
+---
+/**
+ * @fileoverview Skip Navigation Link - 无障碍跳转链接
+ * @description 为键盘用户提供快速跳过导航直接到主内容的功能
+ * @description 符合 WCAG 2.2 AA 级无障碍访问要求
+ * @example
+ * <SkipLink />
+ */
+---
+
+<a
+  href="#main-content"
+  class="skip-link"
+  aria-label="跳转到主内容"
+>
+  跳转到主内容
+</a>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent, #6366f1);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    z-index: 9999;
+    transition: top 0.15s ease;
+  }
+
+  .skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--accent, #6366f1);
+    outline-offset: 2px;
+  }
+</style>

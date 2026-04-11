@@ -1,0 +1,61 @@
+---
+/**
+ * @fileoverview 404 页面
+ * @description 创意 404 页面，引导用户返回首页或浏览文章
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+---
+
+<BaseLayout title="404" description="页面未找到">
+  <Header slot="header" />
+
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <div class="text-center max-w-lg">
+      {/* 404 动画数字 */}
+      <div class="mb-8">
+        <h1 class="text-9xl font-bold text-gradient select-none">
+          404
+        </h1>
+      </div>
+
+      {/* 错误信息 */}
+      <h2 class="text-2xl font-semibold text-text-primary mb-4">
+        页面走失了
+      </h2>
+
+      <p class="text-text-secondary text-lg mb-8">
+        你访问的页面可能已被删除、移动或从未存在过。<br />
+        别担心，探索未知的过程也是一种体验。
+      </p>
+
+      {/* 引导按钮 */}
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/"
+          class="px-6 py-3 bg-accent text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+        >
+          返回首页
+        </a>
+        <a
+          href="/blog"
+          class="px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
+        >
+          浏览文章
+        </a>
+      </div>
+
+      {/* 趣味提示 */}
+      <div class="mt-16 text-text-tertiary text-sm">
+        <p>如果你认为这是一个错误，请</p>
+        <a href="mailto:hello@pixelverse.blog" class="text-accent hover:underline">
+          联系我们
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

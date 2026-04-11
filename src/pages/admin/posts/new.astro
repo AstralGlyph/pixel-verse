@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台新建文章页面（SSR）
+ * @description 渲染 React 文章编辑组件，受认证中间件保护
+ */
+
+import { PostEditPage } from '../../../admin/pages/posts/edit';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="新建文章">
+  <PostEditPage client:load />
+</AdminLayout>

@@ -1,0 +1,90 @@
+---
+/**
+ * @fileoverview 离线页面
+ * @description 当用户断网时显示的友好提示页面
+ */
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>离线 - PixelVerse</title>
+  <meta name="description" content="您已离线，请检查网络连接" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #e5e5e5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 480px;
+      text-align: center;
+    }
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    p {
+      color: #a3a3a3;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #6366f1;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover { background: #4f46e5; }
+    .tips {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #262626;
+      text-align: left;
+    }
+    .tips li {
+      margin-bottom: 0.5rem;
+      color: #737373;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon" aria-hidden="true">📡</div>
+    <h1>你已离线</h1>
+    <p>请检查你的网络连接，然后重试。</p>
+    <button class="btn" onclick="window.location.reload()">
+      重新加载
+    </button>
+    <ul class="tips">
+      <li>检查 Wi-Fi 或移动数据是否开启</li>
+      <li>尝试访问其他页面以确认网络状态</li>
+      <li>已访问过的文章可能已被缓存，可以尝试返回</li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+---
+/**
+ * @fileoverview 标签云页面
+ * @description 展示所有文章标签，点击可跳转到对应标签的文章列表
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+
+// 获取所有非草稿文章
+const allPosts = await getCollection('blog', ({ data }) => {
+  return !data.draft;
+});
+
+// 统计每个标签的文章数量
+const tagCounts = new Map<string, number>();
+allPosts.forEach((post) => {
+  post.data.tags?.forEach((tag: string) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  });
+});
+
+// 按文章数量排序
+const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title="标签" description="浏览所有文章标签">
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- 页面标题 -->
+      <div class="mb-12 text-center">
+        <h1 class="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+          标签云
+        </h1>
+        <p class="text-text-secondary">
+          共 {sortedTags.length} 个标签
+        </p>
+      </div>
+
+      <!-- 标签列表 -->
+      <div class="flex flex-wrap justify-center gap-4">
+        {sortedTags.map(([tag, count]) => (
+          <a
+            href={`/tags/${tag}`}
+            class="tag-link group"
+            aria-label={`查看 ${tag} 标签下的 ${count} 篇文章`}
+          >
+            <span class="tag-name">
+              {tag}
+            </span>
+            <span class="tag-count">
+              {count}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      {sortedTags.length === 0 && (
+        <div class="text-center py-12 text-text-tertiary">
+          暂无标签
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .tag-link {
+    @apply flex items-center gap-2 px-4 py-2 bg-bg-secondary rounded-lg border border-border hover:border-accent transition-all duration-200;
+  }
+
+  .tag-name {
+    @apply font-medium text-text-primary group-hover:text-accent transition-colors;
+  }
+
+  .tag-count {
+    @apply px-2 py-0.5 text-xs bg-bg-tertiary text-text-tertiary rounded-full;
+  }
+</style>

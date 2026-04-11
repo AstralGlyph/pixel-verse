@@ -1,0 +1,9 @@
+---
+/**
+ * @fileoverview 文章详情页 — 重定向到 SSR 版本
+ * @description 旧的 MDX 文章详情页已迁移到 SSR 版本
+ */
+
+const { slug } = Astro.params;
+return Astro.redirect(slug ? `/blog/ssr/${encodeURIComponent(slug)}` : '/blog/ssr');
+---

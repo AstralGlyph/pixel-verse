@@ -1,0 +1,16 @@
+---
+/**
+ * @fileoverview 后台文章预览页面（SSR）
+ * @description 渲染 React 文章预览组件，受认证中间件保护
+ */
+
+import { PostPreviewPage } from '../../../../admin/pages/posts/preview';
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+
+const { id } = Astro.params;
+
+---
+
+<AdminLayout title="文章预览">
+  <PostPreviewPage client:load postId={id} />
+</AdminLayout>

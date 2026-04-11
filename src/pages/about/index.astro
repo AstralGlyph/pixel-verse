@@ -1,0 +1,99 @@
+---
+/**
+ * @fileoverview 关于页面
+ * @description 个人介绍、经历时间线
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+import { Timeline } from '@components/layout/Timeline';
+import type { TimelineItem } from '@components/layout/Timeline';
+import SocialLinks from '@components/social/SocialLinks';
+import socialData from '@data/social.json';
+
+const timelineItems: TimelineItem[] = [
+  {
+    date: '2024 - 至今',
+    title: 'PixelVerse 博客系统',
+    description: '构建内容即体验的个人数字空间，融合交互式叙事与 AI 增强体验。',
+    tags: ['Astro', 'React', 'MDX', 'Tailwind CSS'],
+  },
+  {
+    date: '2023',
+    title: '开源项目贡献',
+    description: '参与多个开源项目，专注于前端框架和开发者工具。',
+    tags: ['Open Source', 'TypeScript'],
+  },
+  {
+    date: '2022',
+    title: '技术写作',
+    description: '开始撰写技术文章，分享前端开发和全栈实践经验。',
+    tags: ['Writing', 'Frontend'],
+  },
+];
+
+const socialLinks = socialData.map((item: { name: string; url: string; icon: string; username: string }) => ({
+  name: item.name,
+  url: item.url,
+  icon: item.icon,
+  username: item.username,
+}));
+---
+
+<BaseLayout title="关于" description="了解更多关于我的故事">
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* 页面标题 */}
+      <h1 class="text-3xl sm:text-4xl font-bold text-text-primary mb-8">
+        关于我
+      </h1>
+
+      {/* 个人介绍 */}
+      <section class="mb-12">
+        <p class="text-text-secondary text-lg leading-relaxed mb-6">
+          你好！我是 PixelVerse 的创作者。一个热爱技术、喜欢分享的开发者。
+          我相信内容不仅仅是文字，更是一种体验。
+        </p>
+        <p class="text-text-secondary text-lg leading-relaxed">
+          这个博客是我探索交互式叙事、AI 增强内容和极致阅读体验的数字空间。
+          每篇文章都是一次独立的体验，每次访问都有新的发现。
+        </p>
+      </section>
+
+      {/* 社交链接 */}
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold text-text-primary mb-4">
+          找到我
+        </h2>
+        <SocialLinks links={socialLinks} />
+      </section>
+
+      {/* 经历时间线 */}
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold text-text-primary mb-6">
+          经历
+        </h2>
+        <Timeline items={timelineItems} />
+      </section>
+
+      {/* 技术栈 */}
+      <section>
+        <h2 class="text-xl font-semibold text-text-primary mb-4">
+          技术栈
+        </h2>
+        <div class="flex flex-wrap gap-2">
+          {['TypeScript', 'React', 'Astro', 'Node.js', 'Tailwind CSS', 'MDX', 'Vite', 'Next.js'].map((tech) => (
+            <span class="px-3 py-1.5 bg-bg-tertiary text-text-secondary rounded-lg text-sm">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

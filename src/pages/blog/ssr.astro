@@ -1,0 +1,88 @@
+---
+/**
+ * @fileoverview SSR 博客列表页（数据库驱动）
+ * @description 从数据库获取已发布文章并展示列表，支持分页
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+import ArticleCard from '@components/layout/ArticleCard/ArticleCard.astro';
+import { getPublishedPosts } from '@lib/services/post.service';
+
+const page = parseInt(Astro.url.searchParams.get('page') || '1');
+const { data: posts, pagination } = await getPublishedPosts(page, 10);
+---
+
+<BaseLayout title="博客" description="浏览所有文章" articles={posts.map(post => ({
+  slug: post.slug,
+  title: post.title,
+  description: post.excerpt || '',
+}))}>
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- 页面标题 -->
+      <div class="mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+          博客
+        </h1>
+        <p class="text-text-secondary">
+          探索技术、分享经验、记录成长
+        </p>
+      </div>
+
+      <!-- 文章列表 -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => (
+          <ArticleCard
+            slug={post.slug}
+            title={post.title}
+            description={post.excerpt || ''}
+            category={post.category?.name || ''}
+            categorySlug={post.category?.slug || ''}
+            tags={post.tags?.map(t => t.name) || []}
+            tagSlugs={post.tags?.map(t => t.slug) || []}
+            publishedAt={post.publishedAt || post.createdAt}
+            readingTime={0}
+          />
+        ))}
+      </div>
+
+      <!-- 分页 -->
+      {pagination.totalPages > 1 && (
+        <div class="mt-8 flex items-center justify-center gap-2">
+          {pagination.page > 1 && (
+            <a
+              href={`/blog/ssr?page=${pagination.page - 1}`}
+              class="rounded border border-border-primary px-3 py-1 text-sm hover:bg-bg-tertiary"
+            >
+              上一页
+            </a>
+          )}
+          <span class="text-sm text-text-tertiary">
+            第 {pagination.page}/{pagination.totalPages} 页
+          </span>
+          {pagination.page < pagination.totalPages && (
+            <a
+              href={`/blog/ssr?page=${pagination.page + 1}`}
+              class="rounded border border-border-primary px-3 py-1 text-sm hover:bg-bg-tertiary"
+            >
+              下一页
+            </a>
+          )}
+        </div>
+      )}
+
+      <!-- 空状态 -->
+      {posts.length === 0 && (
+        <div class="text-center py-12">
+          <p class="text-text-secondary">暂无文章</p>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

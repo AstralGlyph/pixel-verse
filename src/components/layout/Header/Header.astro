@@ -1,0 +1,217 @@
+---
+/**
+ * Header - 顶部导航栏组件
+ * @description 极简设计，包含 Logo、核心入口、主题切换、Command Palette 入口
+ */
+
+import navigation from '@data/navigation.json';
+
+const { main: mainLinks } = navigation;
+
+// 滚动时自动收缩的状态通过客户端脚本实现
+---
+
+<header
+  id="site-header"
+  class="fixed top-0 left-0 right-0 z-40 glass border-b border-border transition-transform duration-300"
+>
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a
+        href="/"
+        class="text-xl font-bold text-gradient hover:opacity-80 transition-opacity"
+      >
+        PixelVerse
+      </a>
+
+      <!-- 导航链接（桌面端） -->
+      <div class="hidden md:flex items-center space-x-8">
+        {mainLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-text-secondary hover:text-text-primary transition-colors font-medium"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- 右侧操作区 -->
+      <div class="flex items-center space-x-4">
+        <!-- Command Palette 入口 -->
+        <button
+          type="button"
+          id="open-command-palette"
+          class="hidden sm:flex items-center space-x-2 px-3 py-1.5 text-sm text-text-tertiary bg-bg-tertiary rounded-lg border border-border hover:border-border-focus transition-colors"
+          aria-label="打开搜索"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <span class="hidden sm:inline">搜索</span>
+          <kbd class="hidden sm:inline px-1.5 py-0.5 text-xs bg-bg rounded">⌘K</kbd>
+        </button>
+
+        <!-- 主题切换按钮 -->
+        <button
+          type="button"
+          id="theme-toggle"
+          class="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors"
+          aria-label="切换主题"
+        >
+          <!-- 亮色图标 -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 hidden dark:block"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            />
+          </svg>
+          <!-- 暗色图标 -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 block dark:hidden"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            />
+          </svg>
+        </button>
+
+        <!-- 移动端菜单按钮 -->
+        <button
+          type="button"
+          id="mobile-menu-toggle"
+          class="md:hidden p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors"
+          aria-label="打开菜单"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="hidden md:hidden pb-4">
+      <div class="flex flex-col space-y-3 pt-4 border-t border-border">
+        {mainLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-text-secondary hover:text-text-primary transition-colors font-medium py-2"
+          >
+            {link.label}
+          </a>
+        ))}
+        <!-- 移动端搜索按钮 -->
+        <button
+          type="button"
+          class="flex items-center space-x-2 text-text-secondary hover:text-text-primary transition-colors py-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <span>搜索</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- 占位符，防止内容被固定导航栏遮挡 -->
+<div class="h-16"></div>
+
+<script>
+  // 移动端菜单切换
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  let mobileMenuOpen = false;
+
+  mobileMenuToggle?.addEventListener('click', () => {
+    mobileMenuOpen = !mobileMenuOpen;
+    mobileMenu?.classList.toggle('hidden');
+    mobileMenuToggle?.setAttribute('aria-expanded', String(mobileMenuOpen));
+  });
+
+  // 主题切换
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.addEventListener('click', () => {
+    window.toggleTheme?.();
+  });
+
+  // Command Palette 快捷键
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      // 触发自定义事件
+      document.dispatchEvent(new CustomEvent('open-command-palette'));
+    }
+  });
+
+  // 滚动时自动收缩导航栏
+  let lastScrollY = window.scrollY;
+  const header = document.getElementById('site-header');
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      // 向下滚动，隐藏导航栏
+      header?.classList.add('-translate-y-full');
+    } else {
+      // 向上滚动，显示导航栏
+      header?.classList.remove('-translate-y-full');
+    }
+
+    lastScrollY = currentScrollY;
+  });
+</script>

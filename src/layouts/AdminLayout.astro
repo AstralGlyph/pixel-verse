@@ -1,0 +1,73 @@
+---
+/**
+ * @fileoverview 后台管理布局 — Paper Garden
+ * @description 书脊式侧边栏 + 暖色调顶部栏
+ */
+import '../styles/global.css';
+import SidebarMount from '@admin/components/layout/SidebarMount.astro';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin CMS</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="h-screen overflow-hidden bg-bg-primary">
+    <div class="flex h-screen">
+      <!-- 侧边栏 — React 组件渲染 -->
+      <SidebarMount />
+
+      <!-- 主内容区 -->
+      <div class="flex min-h-0 flex-1 flex-col">
+        <!-- 头部 -->
+        <header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border-secondary bg-glass-bg/80 backdrop-blur-md px-6">
+          <h2 class="text-lg font-semibold text-text-primary"><slot name="page-title" /></h2>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-text-secondary" id="admin-username"></span>
+            <button id="logout-btn" class="rounded-md bg-error px-4 py-2 text-sm text-white shadow-sm transition-all duration-fast ease-smooth hover:-translate-y-[1px] hover:shadow-md active:translate-y-0 active:shadow-sm">
+              退出登录
+            </button>
+          </div>
+        </header>
+
+        <!-- 页面内容 -->
+        <main class="flex-1 min-h-0 overflow-auto p-6 page-content">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <script>
+      async function checkAuth() {
+        try {
+          const res = await fetch('/api/admin/auth/me', { credentials: 'include' });
+          if (!res.ok) {
+            window.location.href = '/admin';
+            return;
+          }
+          const json = await res.json();
+          const usernameEl = document.getElementById('admin-username');
+          if (usernameEl && json.data) {
+            usernameEl.textContent = json.data.username;
+          }
+        } catch {
+          window.location.href = '/admin';
+        }
+      }
+
+      const logoutBtn = document.getElementById('logout-btn');
+      logoutBtn?.addEventListener('click', async () => {
+        await fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'include' });
+        window.location.href = '/admin';
+      });
+
+      checkAuth();
+    </script>
+  </body>
+</html>

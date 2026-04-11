@@ -1,0 +1,161 @@
+---
+/**
+ * @fileoverview 文章卡片组件
+ * @description 用于博客列表页和首页展示文章摘要
+ * @description 包含标题、描述、发布日期、分类、标签和阅读时间
+ * @example
+ * <ArticleCard
+ *   slug="welcome-to-pixelverse"
+ *   title="欢迎来到 PixelVerse"
+ *   description="文章描述"
+ *   category="技术"
+ *   tags={["Astro", "React"]}
+ *   publishedAt={new Date()}
+ *   readingTime={5}
+ * />
+ */
+
+import { formatDate } from '@utils/date';
+
+export interface Props {
+  /** 文章 slug */
+  slug: string;
+  /** 文章标题 */
+  title: string;
+  /** 文章描述 */
+  description: string;
+  /** 文章分类名称 */
+  category: string;
+  /** 分类 slug */
+  categorySlug?: string;
+  /** 标签列表 */
+  tags?: string[];
+  /** 标签 slugs（与 tags 一一对应） */
+  tagSlugs?: string[];
+  /** 发布日期 */
+  publishedAt: Date | string;
+  /** 阅读时间（分钟） */
+  readingTime?: number;
+  /** 是否精选文章 */
+  featured?: boolean;
+  /** 封面图片 */
+  cover?: {
+    src: string;
+    alt: string;
+  };
+}
+
+const {
+  slug,
+  title,
+  description,
+  category,
+  categorySlug,
+  tags = [],
+  tagSlugs = [],
+  publishedAt,
+  readingTime,
+  featured = false,
+  cover,
+} = Astro.props;
+
+const formattedDate = formatDate(publishedAt);
+const articleUrl = `/blog/ssr/${slug}`;
+---
+
+<article
+  class:list={[
+    'article-card group',
+    featured && 'featured',
+  ]}
+>
+  <a href={articleUrl} class="article-card-link">
+    {/* 封面图片 */}
+    {cover && (
+      <div class="article-card-cover">
+        <img
+          src={cover.src}
+          alt={cover.alt}
+          loading="lazy"
+          class="w-full h-48 object-cover rounded-t-xl"
+        />
+      </div>
+    )}
+
+    <div class="p-6">
+      {/* 元信息行 */}
+      <div class="flex items-center gap-3 text-sm text-text-tertiary mb-3">
+        {category && (
+          <a href={`/blog/ssr?category=${categorySlug || category}`} class="text-accent font-medium hover:underline" onclick="event.stopPropagation()">
+            {category}
+          </a>
+        )}
+        <span aria-hidden="true">·</span>
+        <time datetime={String(publishedAt)}>
+          {formattedDate}
+        </time>
+        {readingTime && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{readingTime} 分钟阅读</span>
+          </>
+        )}
+      </div>
+
+      {/* 标题 */}
+      <h3 class="article-card-title">
+        {title}
+      </h3>
+
+      {/* 描述 */}
+      <p class="article-card-description">
+        {description}
+      </p>
+
+      {/* 标签 */}
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {tags.map((tag: string, i: number) => (
+            <a href={`/blog/ssr?tag=${tagSlugs[i] || tag}`} class="tag-badge hover:bg-accent/10 hover:text-accent" onclick="event.stopPropagation()">
+              {tag}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </a>
+</article>
+
+<style>
+  .article-card {
+    @apply bg-bg-secondary rounded-xl border border-border overflow-hidden transition-all duration-200;
+  }
+
+  .article-card:hover {
+    @apply border-accent shadow-lg;
+  }
+
+  .article-card.featured {
+    @apply border-accent;
+  }
+
+  .article-card-link {
+    @apply block h-full no-underline;
+  }
+
+  .article-card-title {
+    @apply text-xl font-semibold text-text-primary group-hover:text-accent transition-colors mb-2;
+  }
+
+  .article-card-description {
+    @apply text-text-secondary line-clamp-2 leading-relaxed;
+  }
+
+  .tag-badge {
+    @apply px-2 py-0.5 text-xs bg-bg-tertiary text-text-tertiary rounded transition-colors;
+  }
+
+  .article-card:hover .tag-badge {
+    @apply bg-bg-tertiary text-accent;
+  }
+</style>

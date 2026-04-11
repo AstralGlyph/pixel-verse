@@ -1,0 +1,25 @@
+---
+/**
+ * @fileoverview 后台登录入口页面
+ * @description 渲染 React 登录组件
+ */
+import '../../styles/global.css';
+import { LoginPage } from '../../admin/pages/login';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录 - Admin CMS</title>
+  </head>
+  <body class="bg-gray-50">
+    <LoginPage client:load />
+  </body>
+</html>
+
+<style>
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+</style>

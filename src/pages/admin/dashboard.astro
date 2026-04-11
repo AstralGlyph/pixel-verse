@@ -1,0 +1,12 @@
+---
+/**
+ * @fileoverview 后台仪表盘 Astro 页面
+ * @description 渲染 React 仪表盘组件，使用 AdminLayout 提供侧边栏导航
+ */
+import { DashboardPage } from '../../admin/pages/dashboard';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="仪表盘">
+  <DashboardPage client:only="react" />
+</AdminLayout>

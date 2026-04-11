@@ -1,0 +1,163 @@
+---
+/**
+ * @fileoverview OG 图片生成组件
+ * @description 生成 Open Graph 社交分享图片，使用 Canvas API 在服务端渲染
+ * @description 支持自定义标题、描述、背景色、主题色
+ * @example
+ * <OGImage title="文章标题" description="文章描述" />
+ */
+
+export interface Props {
+  /** 文章/页面标题 */
+  title: string;
+  /** 页面描述（可选，显示在标题下方） */
+  description?: string;
+  /** 背景色，默认深色渐变 */
+  bg?: string;
+  /** 主题色 */
+  accent?: string;
+  /** 标签列表 */
+  tags?: string[];
+  /** 作者名称 */
+  author?: string;
+}
+
+const {
+  title,
+  description,
+  accent = '#6366f1',
+  tags = [],
+  author = 'PixelVerse',
+} = Astro.props;
+
+// OG 图片默认尺寸
+const width = 1200;
+const height = 630;
+
+// 生成 SVG 作为 OG 图片（Astro 支持内联 SVG 作为图片源）
+const ogSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="50%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:${accent}"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="${width}" height="${height}" fill="url(#bg)"/>
+
+  <!-- 装饰网格点 -->
+  <g opacity="0.1">
+    ${Array.from({ length: 20 }, (_, i) => {
+      const x = 50 + (i % 5) * 280;
+      const y = 50 + Math.floor(i / 5) * 150;
+      return `<circle cx="${x}" cy="${y}" r="2" fill="#6366f1"/>`;
+    }).join('\n    ')}
+  </g>
+
+  <!-- 顶部装饰线 -->
+  <rect x="80" y="60" width="120" height="4" rx="2" fill="url(#accent-grad)"/>
+
+  <!-- 品牌标识 -->
+  <text x="80" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="#94a3b8">
+    PixelVerse
+  </text>
+
+  <!-- 标题（自动换行处理） -->
+  ${renderTitleText(title, 80, 220, 1040)}
+
+  <!-- 描述 -->
+  ${description ? `
+  <text x="80" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#94a3b8">
+    ${escapeXml(description.substring(0, 100))}${description.length > 100 ? '...' : ''}
+  </text>` : ''}
+
+  <!-- 标签 -->
+  ${tags.length > 0 ? `
+  <g transform="translate(80, 480)">
+    ${tags.slice(0, 4).map((tag, i) => {
+      const x = i * 120;
+      return `
+      <rect x="${x}" y="0" width="${tag.length * 14 + 24}" height="32" rx="16" fill="#6366f1" opacity="0.2"/>
+      <text x="${x + 12}" y="21" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#a5b4fc">
+        ${escapeXml(tag)}
+      </text>`;
+    }).join('\n    ')}
+  </g>` : ''}
+
+  <!-- 底部信息 -->
+  <text x="80" y="570" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#64748b">
+    ${escapeXml(author)} · pixelverse.blog
+  </text>
+</svg>
+`;
+
+/**
+ * 渲染标题文本，处理长标题换行
+ */
+function renderTitleText(text: string, x: number, y: number, maxWidth: number): string {
+  const fontSize = text.length > 40 ? 42 : text.length > 25 ? 48 : 56;
+  const lineHeight = fontSize * 1.3;
+
+  // 简单按字符分割换行
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (const char of text) {
+    const testLine = currentLine + char;
+    // 粗略估计：中文字符约 28px 宽，英文约 14px
+    const estimatedWidth = testLine.length * (fontSize * 0.6);
+    if (estimatedWidth > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = char;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  // 最多显示 3 行
+  const displayLines = lines.slice(0, 3);
+
+  return displayLines.map((line, i) => {
+    const yPos = y + i * lineHeight;
+    return `<text x="${x}" y="${yPos}" font-family="system-ui, -apple-system, sans-serif" font-size="${fontSize}" font-weight="700" fill="#f1f5f9">
+      ${escapeXml(line)}
+    </text>`;
+  }).join('\n  ');
+}
+
+/**
+ * 转义 XML 特殊字符
+ */
+function escapeXml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+---
+
+<!-- 输出 SVG 作为 OG 图片 -->
+<!-- 注意：实际部署时需要通过 API 端点将 SVG 转换为 PNG -->
+<Fragment set:html={ogSvg} />
+
+<!--
+  使用方式：
+  1. 直接在 HTML 中嵌入 SVG（部分平台支持）:
+     <meta property="og:image" content="data:image/svg+xml;base64,..." />
+
+  2. 通过 API 端点生成 PNG（推荐）:
+     <meta property="og:image" content="/api/og?title=..." />
+
+  3. 预生成静态图片文件:
+     <meta property="og:image" content="/images/og/article-slug.png" />
+-->
