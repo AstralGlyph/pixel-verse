@@ -9,10 +9,9 @@ import Header from '@components/layout/Header/Header.astro';
 import Footer from '@components/layout/Footer/Footer.astro';
 import ProjectCard from '@components/layout/ProjectCard/ProjectCard.astro';
 
-const API_URL = import.meta.env.PUBLIC_API_URL || '';
-const response = await fetch(`${API_URL}/api/projects`, {
-  credentials: 'include',
-});
+const url = new URL(Astro.request.url);
+const API_BASE = `${url.origin}`;
+const response = await fetch(`${API_BASE}/api/projects`);
 
 let projects: Array<{
   id: string;

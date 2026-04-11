@@ -8,12 +8,12 @@ import Header from '@components/layout/Header/Header.astro';
 import Footer from '@components/layout/Footer/Footer.astro';
 import MarkdownRenderer from '@components/MarkdownRenderer';
 
-const slug = Astro.params.slug;
-const API_URL = import.meta.env.PUBLIC_API_URL || '';
+const url = new URL(Astro.request.url);
+const API_BASE = `${url.origin}`;
 
-const response = await fetch(`${API_URL}/api/projects/${slug}`, {
-  credentials: 'include',
-});
+const slug = Astro.params.slug;
+
+const response = await fetch(`${API_BASE}/api/projects/${slug}`);
 
 if (!response.ok) {
   return new Response(null, { status: 404 });
@@ -23,9 +23,8 @@ const data = await response.json();
 const project = data.data || data;
 
 // 触发浏览计数（异步，不阻塞渲染）
-fetch(`${API_URL}/api/projects/${slug}/view`, {
+fetch(`${API_BASE}/api/projects/${slug}/view`, {
   method: 'POST',
-  credentials: 'include',
 }).catch(() => {});
 
 const tags = project.tags || [];
