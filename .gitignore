@@ -41,9 +41,6 @@ coverage/
 # TypeScript
 *.tsbuildinfo
 
-# Playwright
-test-results/
-playwright-report/
 
 # Misc
 *.local
@@ -53,17 +50,4 @@ playwright-report/
 # Database
 data/
 
-# Development tool directories
-.playwright-mcp/
-.superbrains/
-.superpowers/
-.specify/
 
-# Development screenshots
-*.png
-!public/**/*.png
-
-# Development scripts
-debug-preview.cjs
-*.bak
-*.bak2
