@@ -7,12 +7,12 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: pnpm install && pnpm build && node scripts/db-migrate.mjs && node scripts/db-seed.mjs
-    startCommand: node dist/server/entry.mjs
+    buildCommand: pnpm install && pnpm build
+    startCommand: node scripts/db-migrate.mjs && node scripts/db-seed.mjs && node dist/server/entry.mjs
     healthCheckPath: /
     envVars:
       - key: NODE_VERSION
-        value: 20.0.0
+        value: 20.x
       - key: NODE_ENV
         value: production
       - key: HOST
