@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import UsersPage from '../../admin/pages/users';
+---
+
+<AdminLayout title="用户管理">
+  <UsersPage client:load />
+</AdminLayout>

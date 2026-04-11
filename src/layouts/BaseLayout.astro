@@ -1,0 +1,160 @@
+---
+/**
+ * BaseLayout - 基础页面布局
+ * @description 所有页面的基础布局模板
+ */
+
+import '../styles/global.css';
+import CommandPalette from '@components/interactive/CommandPalette';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  /** 是否显示阅读进度条 */
+  showReadingProgress?: boolean;
+  /** Command Palette 文章数据 */
+  articles?: Array<{ slug: string; title: string; description?: string }>;
+  /** Command Palette 标签数据 */
+  tags?: string[];
+}
+
+const {
+  title,
+  description = '内容即体验的个人博客系统',
+  image = '/images/og/default.png',
+  showReadingProgress = false,
+  articles = [],
+  tags = [],
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString() || 'https://pixelverse.blog';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// 基础 meta 标签
+const metaTags = [
+  { name: 'description', content: description },
+  { name: 'generator', content: Astro.generator },
+  { property: 'og:title', content: title },
+  { property: 'og:description', content: description },
+  { property: 'og:type', content: 'website' },
+  { property: 'og:url', content: canonicalURL.toString() },
+  { property: 'og:image', content: new URL(image, siteUrl).toString() },
+  { name: 'twitter:card', content: 'summary_large_image' },
+  { name: 'twitter:title', content: title },
+  { name: 'twitter:description', content: description },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{title} | PixelVerse</title>
+
+    <!-- Meta Tags -->
+    {metaTags.map((tag) => (
+      <meta {...tag} />
+    ))}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="PixelVerse" href="/rss.xml" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- 主题初始化脚本（防止闪烁） -->
+    <script is:inline>
+      const theme = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    </script>
+  </head>
+  <body class="min-h-screen bg-bg text-text antialiased">
+    <!-- Skip Link（无障碍） -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-md"
+    >
+      跳转到主内容
+    </a>
+
+    <!-- 阅读进度条 -->
+    {showReadingProgress && (
+      <div class="reading-progress" id="reading-progress" />
+    )}
+
+    <!-- 主内容区域 -->
+    <div class="flex flex-col min-h-screen">
+      <slot name="header" />
+
+      <main id="main-content" class="flex-1">
+        <slot />
+      </main>
+
+      <slot name="footer" />
+    </div>
+
+    <!-- 主题切换脚本 -->
+    <script>
+      // 主题切换函数
+      window.toggleTheme = function() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        // View Transitions API
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+          });
+        } else {
+          html.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+        }
+      };
+
+      // 阅读进度条
+      if (document.getElementById('reading-progress')) {
+        window.addEventListener('scroll', () => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = (scrollTop / docHeight) * 100;
+          document.documentElement.style.setProperty('--progress', `${progress}%`);
+        });
+      }
+    </script>
+
+    <!-- 命令面板 -->
+    <CommandPalette
+      articles={articles}
+      tags={tags}
+      client:only="react"
+    />
+
+    <!-- PWA Service Worker 注册 -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+      }
+    </script>
+  </body>
+</html>

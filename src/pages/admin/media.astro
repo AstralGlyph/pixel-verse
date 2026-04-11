@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台媒体库页面（SSR）
+ * @description 渲染 React 媒体库组件，受认证中间件保护
+ */
+
+import { MediaLibraryPage } from '../../admin/pages/media';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="媒体库">
+  <MediaLibraryPage client:load />
+</AdminLayout>

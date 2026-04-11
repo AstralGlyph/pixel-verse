@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台页面管理（SSR）
+ * @description 渲染 React 页面管理组件，受认证中间件保护
+ */
+
+import { PagesAdminPage } from '../../admin/pages/pages-admin';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="页面管理">
+  <PagesAdminPage client:load />
+</AdminLayout>

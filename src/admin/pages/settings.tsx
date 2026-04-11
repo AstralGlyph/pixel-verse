@@ -99,7 +99,7 @@ export default function SettingsPage() {
     if (!user) return;
 
     try {
-      const res = await fetch(`/api/admin/users/${user.id}`, {
+      const res = await fetch('/api/admin/auth/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email }),

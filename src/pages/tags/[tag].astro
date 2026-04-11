@@ -1,0 +1,107 @@
+---
+/**
+ * @fileoverview 标签文章列表页
+ * @description 展示特定标签下的所有文章
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header/Header.astro';
+import Footer from '@components/layout/Footer/Footer.astro';
+import ArticleCard from '@components/layout/ArticleCard/ArticleCard.astro';
+import { getReadingTimeInfo } from '@utils/reading-time';
+
+// 获取当前标签
+export function getStaticPaths() {
+  return [];
+}
+
+// 获取所有非草稿文章
+const allPosts = await getCollection('blog', ({ data }) => {
+  return !data.draft;
+});
+
+// 获取当前标签名
+const { tag } = Astro.params;
+
+// 筛选包含当前标签的文章
+const filteredPosts = allPosts
+  .filter((post) => post.data.tags?.includes(tag || ''))
+  .sort((a, b) => {
+    return new Date(b.data.publishedAt).valueOf() - new Date(a.data.publishedAt).valueOf();
+  });
+---
+
+<BaseLayout title={`标签: ${tag}`} description={`查看 ${tag} 标签下的文章`}>
+  <Header slot="header" />
+
+  <main class="min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- 面包屑导航 -->
+      <nav class="mb-8" aria-label="面包屑导航">
+        <ol class="flex items-center gap-2 text-sm text-text-tertiary">
+          <li>
+            <a href="/" class="hover:text-accent transition-colors">
+              首页
+            </a>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <a href="/tags" class="hover:text-accent transition-colors">
+              标签
+            </a>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li class="text-text-primary" aria-current="page">
+            {tag}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- 页面标题 -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-text-primary mb-2">
+          #{tag}
+        </h1>
+        <p class="text-text-secondary">
+          共 {filteredPosts.length} 篇文章
+        </p>
+      </div>
+
+      <!-- 文章列表 -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredPosts.map((post) => {
+          const readingTime = getReadingTimeInfo('', post.data.readingTime);
+
+          return (
+            <ArticleCard
+              slug={post.slug}
+              title={post.data.title}
+              description={post.data.description}
+              category={post.data.category}
+              tags={post.data.tags || []}
+              publishedAt={post.data.publishedAt}
+              readingTime={readingTime.minutes}
+              featured={post.data.featured}
+              cover={post.data.cover}
+            />
+          );
+        })}
+      </div>
+
+      <!-- 空状态 -->
+      {filteredPosts.length === 0 && (
+        <div class="text-center py-12">
+          <p class="text-text-secondary mb-4">
+            暂无标签为 "{tag}" 的文章
+          </p>
+          <a href="/tags" class="text-accent hover:underline">
+            查看所有标签 →
+          </a>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

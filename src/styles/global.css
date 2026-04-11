@@ -197,10 +197,10 @@
 /* 侧边栏书脊 — Paper Garden */
 .sidebar-spine {
   position: fixed;
-  top: 4rem;
+  top: 0;
   left: 0;
   width: 4px;
-  height: calc(100vh - 4rem);
+  height: 100vh;
   background: linear-gradient(180deg, var(--color-accent-primary), var(--color-accent-muted));
   z-index: 100;
   transition: width var(--duration-slow) var(--ease-float);

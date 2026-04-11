@@ -1,0 +1,19 @@
+{
+  "name": "PixelVerse - 内容即体验",
+  "short_name": "PixelVerse",
+  "description": "个人博客系统，融合交互式叙事与 AI 增强体验",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/og/default.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "blog"]
+}

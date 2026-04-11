@@ -66,7 +66,7 @@ export default function UsersPage() {
     try {
       const res = await fetch('/api/admin/roles');
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setRoles(data.data);
       }
     } catch (err) {
@@ -86,13 +86,13 @@ export default function UsersPage() {
         body: JSON.stringify(newUser),
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setSuccess('用户创建成功');
         setShowCreateModal(false);
         setNewUser({ username: '', email: '', password: '', roleId: '' });
         fetchUsers();
       } else {
-        setError(data.message || '创建用户失败');
+        setError(data.error?.message || '创建用户失败');
       }
     } catch (err) {
       setError('创建用户失败');
@@ -113,13 +113,13 @@ export default function UsersPage() {
         body: JSON.stringify({ password: resetPassword }),
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setSuccess('密码重置成功');
         setShowResetModal(false);
         setResetPassword('');
         setSelectedUser(null);
       } else {
-        setError(data.message || '重置密码失败');
+        setError(data.error?.message || '重置密码失败');
       }
     } catch (err) {
       setError('重置密码失败');
@@ -137,11 +137,11 @@ export default function UsersPage() {
         body: JSON.stringify({ roleId }),
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.data) {
         setSuccess('角色更新成功');
         fetchUsers();
       } else {
-        setError(data.message || '更新角色失败');
+        setError(data.error?.message || '更新角色失败');
       }
     } catch (err) {
       setError('更新角色失败');
@@ -163,7 +163,7 @@ export default function UsersPage() {
         fetchUsers();
       } else {
         const data = await res.json();
-        setError(data.message || '删除用户失败');
+        setError(data.error?.message || '删除用户失败');
       }
     } catch (err) {
       setError('删除用户失败');
@@ -243,14 +243,14 @@ export default function UsersPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-right space-x-2">
                   <button
                     onClick={() => { setSelectedUser(user); setShowResetModal(true); }}
-                    className="text-yellow-500 hover:text-yellow-400 transition-colors"
+                    className="inline-flex items-center justify-center p-1.5 rounded-md text-yellow-400 bg-yellow-500/10 hover:bg-yellow-500/20 transition-all duration-fast"
                     title="重置密码"
                   >
                     <KeyRound size={18} />
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user.id)}
-                    className="text-error hover:text-error/80 transition-colors"
+                    className="inline-flex items-center justify-center p-1.5 rounded-md text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-all duration-fast"
                     title="删除用户"
                   >
                     <Trash2 size={18} />
@@ -374,7 +374,7 @@ export default function UsersPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-warning/90 text-white rounded-md hover:bg-warning hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
+                  className="px-4 py-2 bg-warning text-white rounded-md hover:-translate-y-[1px] hover:shadow-md transition-all duration-fast ease-smooth"
                 >
                   重置密码
                 </button>

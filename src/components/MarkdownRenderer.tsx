@@ -1,6 +1,6 @@
 /**
- * @fileoverview Markdown/HTML 渲染组件
- * @description 渲染 TipTap 编辑器生成的 HTML 内容，支持代码高亮
+ * @fileoverview 轻量级 Markdown/HTML 渲染组件
+ * @description 仅渲染 HTML 内容，不包含 Shiki 依赖。适用于 SSR 已高亮的场景
  */
 
 import React from 'react';
@@ -13,7 +13,7 @@ interface MarkdownRendererProps {
 export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   return (
     <div
-      className={`prose prose-lg max-w-none ${className || ''}`}
+      className={`prose prose-lg ${className || ''}`}
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );

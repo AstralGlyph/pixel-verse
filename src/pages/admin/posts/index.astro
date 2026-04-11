@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台文章列表页面（SSR）
+ * @description 渲染 React 文章列表组件，受认证中间件保护
+ */
+
+import { PostsListPage } from '../../../admin/pages/posts/index';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="文章管理">
+  <PostsListPage client:load />
+</AdminLayout>

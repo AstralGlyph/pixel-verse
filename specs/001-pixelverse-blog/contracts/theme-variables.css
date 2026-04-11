@@ -1,0 +1,181 @@
+/**
+ * Theme Variables Contract
+ *
+ * 定义博客系统的 CSS Custom Properties（CSS 变量）
+ * 所有颜色值使用 OKLCH 色彩空间，确保感知均匀
+ */
+
+/* ============================================
+   基础调色板（Design Tokens）
+   ============================================ */
+
+:root {
+  /* === 颜色 === */
+
+  /* 背景色 */
+  --color-bg-primary: oklch(99% 0 0);           /* 主背景 */
+  --color-bg-secondary: oklch(96% 0 0);         /* 次背景（卡片、侧边栏） */
+  --color-bg-tertiary: oklch(92% 0 0);          /* 三级背景（代码块背景） */
+  --color-bg-overlay: oklch(0% 0 0 / 0.5);      /* 遮罩层 */
+
+  /* 文本色 */
+  --color-text-primary: oklch(20% 0 0);         /* 主文本 */
+  --color-text-secondary: oklch(40% 0 0);       /* 次文本（描述、标签） */
+  --color-text-tertiary: oklch(55% 0 0);        /* 三级文本（注释、占位符） */
+  --color-text-inverse: oklch(98% 0 0);         /* 反色文本（深色背景上的文本） */
+
+  /* 强调色 */
+  --color-accent-primary: oklch(55% 0.2 250);   /* 主强调色（品牌色） */
+  --color-accent-secondary: oklch(65% 0.15 250);/* 次强调色（悬停状态） */
+  --color-accent-muted: oklch(90% 0.05 250);    /* 柔和强调色（背景高亮） */
+
+  /* 语义色 */
+  --color-success: oklch(60% 0.2 145);          /* 成功 */
+  --color-warning: oklch(75% 0.15 85);          /* 警告 */
+  --color-error: oklch(55% 0.2 25);             /* 错误 */
+  --color-info: oklch(60% 0.2 230);             /* 信息 */
+
+  /* 边框色 */
+  --color-border-primary: oklch(88% 0 0);       /* 主边框 */
+  --color-border-secondary: oklch(92% 0 0);     /* 次边框 */
+  --color-border-focus: oklch(55% 0.2 250);     /* 焦点边框 */
+
+  /* === 间距 === */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* === 字号 === */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  --font-size-6xl: 3.75rem;   /* 60px */
+
+  /* === 行高 === */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* === 字重 === */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* === 圆角 === */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* === 阴影 === */
+  --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px oklch(0% 0 0 / 0.1);
+
+  /* === 过渡 === */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* === 布局 === */
+  --content-width: 680px;       /* 正文内容宽度 */
+  --content-width-wide: 900px;  /* 宽内容宽度（图片、代码） */
+  --sidebar-width: 280px;       /* 侧边栏宽度 */
+  --header-height: 64px;        /* 导航栏高度 */
+
+  /* === 断点（供 JS 使用） === */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ============================================
+   暗色主题
+   ============================================ */
+
+[data-theme="dark"] {
+  /* 背景色 */
+  --color-bg-primary: oklch(15% 0 0);
+  --color-bg-secondary: oklch(20% 0 0);
+  --color-bg-tertiary: oklch(25% 0 0);
+  --color-bg-overlay: oklch(0% 0 0 / 0.75);
+
+  /* 文本色 */
+  --color-text-primary: oklch(95% 0 0);
+  --color-text-secondary: oklch(75% 0 0);
+  --color-text-tertiary: oklch(55% 0 0);
+  --color-text-inverse: oklch(15% 0 0);
+
+  /* 强调色（暗色模式稍微调亮） */
+  --color-accent-primary: oklch(70% 0.2 250);
+  --color-accent-secondary: oklch(75% 0.18 250);
+  --color-accent-muted: oklch(30% 0.08 250);
+
+  /* 边框色 */
+  --color-border-primary: oklch(30% 0 0);
+  --color-border-secondary: oklch(25% 0 0);
+
+  /* 阴影（暗色模式更柔和） */
+  --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px oklch(0% 0 0 / 0.4);
+}
+
+/* ============================================
+   系统主题跟随
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* 复用暗色主题变量 */
+    --color-bg-primary: oklch(15% 0 0);
+    --color-bg-secondary: oklch(20% 0 0);
+    /* ... 其他暗色变量 ... */
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-normal: 0ms;
+    --transition-slow: 0ms;
+  }
+}
+
+/* ============================================
+   高对比模式
+   ============================================ */
+
+@media (forced-colors: active) {
+  :root {
+    --color-text-primary: CanvasText;
+    --color-bg-primary: Canvas;
+    --color-border-primary: CanvasText;
+  }
+}

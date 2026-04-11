@@ -1,0 +1,16 @@
+---
+/**
+ * @fileoverview 后台文章编辑页面（SSR）
+ * @description 渲染 React 文章编辑组件，受认证中间件保护
+ */
+
+import { PostEditPage } from '../../../../admin/pages/posts/edit';
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+
+const { id } = Astro.params;
+
+---
+
+<AdminLayout title="编辑文章">
+  <PostEditPage client:load postId={id} />
+</AdminLayout>

@@ -375,7 +375,7 @@ export function PostEditPage({ postId }: EditPageProps) {
       )}
 
       {/* 编辑器 + 右侧面板 */}
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-4 min-h-0">
         {/* 左侧：编辑器区域 */}
         <div className="min-w-0 flex-1 space-y-4">
           {/* 标题 */}
@@ -429,9 +429,9 @@ export function PostEditPage({ postId }: EditPageProps) {
         <div
           className={`hidden md:block shrink-0 transition-all duration-normal ${
             showSettings ? 'w-[200px]' : 'w-[280px]'
-          } lg:sticky lg:top-20`}
+          } lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-hidden`}
         >
-          <Outline content={post.content} />
+          <Outline content={post.content} className="lg:flex lg:h-full lg:flex-col" />
         </div>
       </div>
 

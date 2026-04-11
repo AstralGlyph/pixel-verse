@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台新建页面（SSR）
+ * @description 渲染 React 页面编辑器组件，受认证中间件保护
+ */
+
+import { PageEditor } from '../../../admin/pages/pages-editor';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="新建页面">
+  <PageEditor client:load />
+</AdminLayout>

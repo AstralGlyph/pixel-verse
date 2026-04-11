@@ -1,0 +1,14 @@
+---
+/**
+ * @fileoverview 后台标签管理页面（SSR）
+ * @description 渲染 React 标签管理组件，受认证中间件保护
+ */
+
+import { TagsPage } from '../../admin/pages/tags';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+---
+
+<AdminLayout title="标签管理">
+  <TagsPage client:load />
+</AdminLayout>

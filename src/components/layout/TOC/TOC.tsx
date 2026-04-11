@@ -25,6 +25,8 @@ export interface TOCProps {
   headings: HeadingItem[];
   /** 是否显示在移动端 */
   showOnMobile?: boolean;
+  /** 桌面端默认展开状态 */
+  defaultExpanded?: boolean;
   /** 额外类名 */
   className?: string;
 }
@@ -35,10 +37,11 @@ export interface TOCProps {
 export function TOC({
   headings,
   showOnMobile = false,
+  defaultExpanded = true,
   className = '',
 }: TOCProps): ReactNode {
   const [activeSlug, setActiveSlug] = useState<string>('');
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   // 过滤出有效的标题（h2-h4）
   const visibleHeadings = useMemo(
@@ -98,55 +101,91 @@ export function TOC({
     return null;
   }
 
+  // 渲染目录列表（复用）
+  const renderHeadings = () => (
+    <ul className="space-y-2">
+      {visibleHeadings.map((heading) => {
+        const isActive = activeSlug === heading.slug;
+        const indentClass = {
+          2: 'pl-0',
+          3: 'pl-3',
+          4: 'pl-6',
+        }[heading.level] || 'pl-0';
+
+        return (
+          <li key={heading.slug}>
+            <button
+              type="button"
+              onClick={() => handleHeadingClick(heading.slug)}
+              className={`
+                text-sm text-left w-full truncate py-1 transition-colors
+                ${indentClass}
+                ${isActive
+                  ? 'text-accent font-medium'
+                  : 'text-text-secondary hover:text-text-primary'
+                }
+              `}
+              aria-current={isActive ? 'location' : undefined}
+            >
+              {heading.text}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+
   return (
     <nav
       className={`toc-nav ${className}`}
       aria-label="文章目录"
     >
-      {/* 桌面端 - 固定侧边栏 */}
-      <div className="hidden lg:block sticky top-20">
-        <h3 className="text-sm font-semibold text-text-primary mb-4">
-          目录
-        </h3>
-        <ul className="space-y-2">
-          {visibleHeadings.map((heading) => {
-            const isActive = activeSlug === heading.slug;
-            const indentClass = {
-              2: 'pl-0',
-              3: 'pl-3',
-              4: 'pl-6',
-            }[heading.level] || 'pl-0';
+      {/* 桌面端 - 可收起侧边栏 */}
+      <div className="hidden xl:block">
+        {/* 展开状态：右侧固定面板 */}
+        {isExpanded && (
+          <div className="fixed right-0 top-20 bottom-0 w-72 bg-bg border-l border-border p-4 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-text-primary">
+                目录
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsExpanded(false)}
+                className="p-1 text-text-secondary hover:text-text-primary transition-colors"
+                aria-label="收起目录"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {renderHeadings()}
+          </div>
+        )}
 
-            return (
-              <li key={heading.slug}>
-                <button
-                  type="button"
-                  onClick={() => handleHeadingClick(heading.slug)}
-                  className={`
-                    text-sm text-left w-full truncate transition-colors
-                    ${indentClass}
-                    ${isActive
-                      ? 'text-accent font-medium'
-                      : 'text-text-secondary hover:text-text-primary'
-                    }
-                  `}
-                  aria-current={isActive ? 'location' : undefined}
-                >
-                  {heading.text}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      {/* 移动端 - 可展开菜单 */}
-      {showOnMobile && (
-        <div className="lg:hidden">
+        {/* 浮动切换按钮（仅收起时可见） */}
+        {!isExpanded && (
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-primary bg-bg-secondary rounded-lg border border-border"
+            className="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex items-center justify-center w-10 h-10 bg-bg-secondary border border-border rounded-full shadow-lg text-text-secondary hover:text-text-primary hover:border-accent transition-all"
+            aria-label="展开目录"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* 移动端/平板 - 可展开菜单 */}
+      {showOnMobile && (
+        <div className="xl:hidden">
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="xl:hidden flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-primary bg-bg-secondary rounded-lg border border-border"
             aria-expanded={isExpanded}
             aria-controls="toc-mobile-panel"
           >
@@ -167,7 +206,7 @@ export function TOC({
           </button>
 
           {isExpanded && (
-            <div id="toc-mobile-panel" className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="目录导航">
+            <div id="toc-mobile-panel" className="fixed inset-0 z-50 xl:hidden" role="dialog" aria-modal="true" aria-label="目录导航">
               {/* 背景遮罩 */}
               <div
                 className="absolute inset-0 bg-black/50"
@@ -192,35 +231,7 @@ export function TOC({
                   </button>
                 </div>
 
-                <ul className="space-y-2">
-                  {visibleHeadings.map((heading) => {
-                    const isActive = activeSlug === heading.slug;
-                    const indentClass = {
-                      2: 'pl-0',
-                      3: 'pl-3',
-                      4: 'pl-6',
-                    }[heading.level] || 'pl-0';
-
-                    return (
-                      <li key={heading.slug}>
-                        <button
-                          type="button"
-                          onClick={() => handleHeadingClick(heading.slug)}
-                          className={`
-                            text-sm text-left w-full truncate py-1 transition-colors
-                            ${indentClass}
-                            ${isActive
-                              ? 'text-accent font-medium'
-                              : 'text-text-secondary hover:text-text-primary'
-                            }
-                          `}
-                        >
-                          {heading.text}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {renderHeadings()}
               </div>
             </div>
           )}
