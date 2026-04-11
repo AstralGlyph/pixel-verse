@@ -46,7 +46,7 @@ import SidebarMount from '@admin/components/layout/SidebarMount.astro';
     <script>
       async function checkAuth() {
         try {
-          const res = await fetch('/api/admin/auth/me');
+          const res = await fetch('/api/admin/auth/me', { credentials: 'include' });
           if (!res.ok) {
             window.location.href = '/admin';
             return;
@@ -63,7 +63,7 @@ import SidebarMount from '@admin/components/layout/SidebarMount.astro';
 
       const logoutBtn = document.getElementById('logout-btn');
       logoutBtn?.addEventListener('click', async () => {
-        await fetch('/api/admin/auth/logout', { method: 'POST' });
+        await fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'include' });
         window.location.href = '/admin';
       });
 
