@@ -99,7 +99,7 @@ function startDevServer() {
   log(`启动开发服务器 http://localhost:${DEV_PORT}`, CYAN);
   log('按 Ctrl+C 停止服务器', YELLOW);
 
-  const child = spawn('pnpm', ['dev'], {
+  const child = spawn('npx', ['astro', 'dev'], {
     cwd: ROOT,
     stdio: 'inherit',
     env: { ...process.env, PORT: String(DEV_PORT) },
