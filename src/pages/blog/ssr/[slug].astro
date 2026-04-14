@@ -31,15 +31,36 @@ const readingTime = Math.ceil(post.content.replace(/<[^>]*>/g, '').split(/\s+/).
  */
 function extractHeadings(html: string) {
   const headings: Array<{ level: number; text: string; slug: string }> = [];
-  const regex = /<h([1-4])[^>]*>(.*?)<\/h\1>/gi;
+  // Match heading tags with or without existing id attribute
+  // First pattern captures headings that already have id="" (from editor)
+  // Second pattern captures headings without id (fallback to generated slug)
+  const regex = /<h([1-4])([^>]*)\sid=["']([^"']*)["'][^>]*>(.*?)<\/h\1>|<h([1-4])([^>]*)>(.*?)<\/h\5>/gi;
   let match;
 
   while ((match = regex.exec(html)) !== null) {
-    const level = parseInt(match[1], 10);
-    const text = match[2].replace(/<[^>]*>/g, '').trim();
-    // 生成 slug：中文转拼音或使用文本本身
-    const slugText = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\u4e00-\u9fff-]/g, '');
-    headings.push({ level, text, slug: slugText });
+    if (match[3]) {
+      // Heading has existing id attribute from editor
+      const level = parseInt(match[1], 10);
+      const text = match[4].replace(/<[^>]*>/g, '').trim();
+      const slug = match[3];
+      headings.push({ level, text, slug });
+    } else {
+      // Heading has no id, generate slug as fallback
+      const level = parseInt(match[5], 10);
+      const text = match[7].replace(/<[^>]*>/g, '').trim();
+      // Use generateHeadingSlug for consistency with editor, ensuring no duplicate slugs
+      const slugText = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\u4e00-\u9fff-]/g, '');
+      // Simple deduplication: if slug already used, add numeric suffix
+      let slug = slugText;
+      if (slug && headings.some(h => h.slug === slug)) {
+        let counter = 1;
+        while (headings.some(h => h.slug === `${slug}-${counter}`)) {
+          counter++;
+        }
+        slug = `${slug}-${counter}`;
+      }
+      headings.push({ level, text, slug: slug || `heading-${headings.length}` });
+    }
   }
 
   return headings;

@@ -31,8 +31,11 @@ import Details from '@tiptap/extension-details';
 import DetailsSummary from '@tiptap/extension-details-summary';
 import DetailsContent from '@tiptap/extension-details-content';
 import UniqueID from '@tiptap/extension-unique-id';
+import { HeadingWithId, updateHeadingSlugs } from './extensions/heading-with-id';
 import Audio from '@tiptap/extension-audio';
 import CodeMark from '@tiptap/extension-code';
+import { MermaidBlock } from './extensions/mermaid';
+import { Extension } from '@tiptap/core';
 import MediaPicker from '../media/MediaPicker';
 import { createLowlight, all } from 'lowlight';
 import { Markdown } from '@tiptap/markdown';
@@ -65,6 +68,7 @@ import {
   Rows,
   Columns,
   GripVertical,
+  GitMerge,
 } from 'lucide-react';
 
 // 创建 lowlight 实例并注册所有常用语言
@@ -145,16 +149,19 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({
-        heading: { levels: [1, 2, 3] },
+        heading: false,
         blockquote: { HTMLAttributes: { class: 'zen-blockquote' } },
         code: false,         // 禁用内置 code mark，使用独立扩展以支持 marks 共存
         codeBlock: false,    // 使用 CodeBlockLowlight 替代
+      }),
+      HeadingWithId.configure({
+        levels: [1, 2, 3],
       }),
       CodeMark.extend({
         excludes: '',  // 覆盖默认的 excludes: '_'，允许 bold/italic/underline/strike 与 code 共存
       }),
       Underline,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      TextAlign.configure({ types: ['paragraph'] }),
       Image.configure({ inline: false, allowBase64: true }),
       Link.configure({ openOnClick: false }),
       TextStyle,
@@ -213,15 +220,49 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
       DetailsContent,
       UniqueID.configure({
         attributeName: 'id',
-        types: ['heading', 'paragraph', 'blockquote', 'codeBlock', 'bulletList', 'orderedList', 'taskList', 'table', 'details'],
+        types: ['paragraph', 'blockquote', 'codeBlock', 'mermaidBlock', 'bulletList', 'orderedList', 'taskList', 'table', 'details'],
       }),
       Audio,
+      MermaidBlock,
+      // 自动将粘贴的 ```mermaid 代码块升级为 MermaidBlock
+      Extension.create({
+        name: 'mermaidBlockUpgrade',
+        onUpdate({ editor: ed }) {
+          const { state, view } = ed;
+          const tr = state.tr;
+          let modified = false;
+
+          state.doc.descendants((node, pos) => {
+            if (node.type.name === 'codeBlock' && node.attrs.language === 'mermaid') {
+              const mermaidBlock = state.schema.nodes.mermaidBlock?.create(
+                { previewOpen: true, theme: 'default' },
+                state.schema.text(node.textContent),
+              );
+              if (mermaidBlock) {
+                tr.replaceWith(pos, pos + node.nodeSize, mermaidBlock);
+                modified = true;
+                return false;
+              }
+            }
+          });
+
+          if (modified && tr.docChanged) {
+            view.dispatch(tr);
+          }
+        },
+      }),
       Markdown.configure({
         indentation: { style: 'space', size: 2 },
       }),
     ],
     content,
     onUpdate: ({ editor: ed }) => {
+      // 自动生成并更新标题 slug
+      const { tr } = ed.state;
+      const updatedTr = updateHeadingSlugs(tr);
+      if (updatedTr) {
+        ed.view.dispatch(updatedTr);
+      }
       if (!isUpdatingRef.current) {
         onChange(ed.getHTML());
       }
@@ -913,6 +954,23 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
                 <span className="text-sm">♫</span>
                 音频
               </button>
+
+              {/* Mermaid 图表 */}
+              <button
+                type="button"
+                onClick={() => {
+                  editor.chain().focus().insertContent({
+                    type: 'mermaidBlock',
+                    attrs: { previewOpen: true, theme: 'default' },
+                    content: [{ type: 'text', text: ' ' }],
+                  }).run();
+                }}
+                className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-text-secondary transition-all duration-150 hover:bg-glass-bg-hover hover:text-text-primary"
+                title="Mermaid 图表"
+              >
+                <GitMerge className="h-4 w-4" />
+                Mermaid
+              </button>
             </div>
           )}
 
@@ -1398,6 +1456,39 @@ export function Editor({ content, onChange, placeholder, charLimit }: EditorProp
 
         .ProseMirror::-webkit-scrollbar-thumb:hover {
           background: #9ca3af;
+        }
+
+        /* MermaidBlock 样式 */
+        .ProseMirror .mermaid-block-wrapper {
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .ProseMirror .mermaid-block-code {
+          background: rgb(30 30 30 / 0.03);
+        }
+
+        .ProseMirror .mermaid-block-code pre {
+          margin: 0;
+          padding: 12px 16px;
+          font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 13px;
+          line-height: 1.6;
+          tab-size: 2;
+          min-height: 60px;
+        }
+
+        .ProseMirror .mermaid-svg-container svg {
+          max-width: 100% !important;
+          width: 100% !important;
+          height: auto !important;
+          margin: 0 auto;
+          display: block;
+        }
+
+        /* 暗色模式 Mermaid 预览 */
+        .dark .ProseMirror .mermaid-svg-container {
+          background: #1e1e1e;
         }
       `}</style>
 
