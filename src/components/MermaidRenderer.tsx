@@ -19,7 +19,7 @@ const SVG_ALLOWED_TAGS = [
   'svg', 'g', 'path', 'rect', 'circle', 'text', 'line',
   'polygon', 'polyline', 'marker', 'defs', 'use', 'tspan',
   'style', 'clipPath', 'pattern', 'linearGradient', 'radialGradient',
-  'stop', 'ellipse', 'foreignObject',
+  'stop', 'ellipse', 'foreignObject', 'html',
 ];
 
 const HTML_ALLOWED_TAGS = [
