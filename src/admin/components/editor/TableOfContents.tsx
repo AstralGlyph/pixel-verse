@@ -30,7 +30,7 @@ function extractHeadings(editor: Editor): HeadingNode[] {
     if (node.type.name === 'heading') {
       const level = node.attrs.level as 1 | 2 | 3;
       if (level >= 1 && level <= 3) {
-        const id = node.attrs.id || '';
+        const id = node.attrs.slug || node.attrs.id || '';
         const text = node.textContent || '';
         if (text.trim()) {
           headings.push({ id, text: text.trim(), level, pos });
@@ -108,7 +108,10 @@ export function TableOfContents({ editor }: TableOfContentsProps) {
   const handleHeadingClick = useCallback(
     (pos: number) => {
       if (!editor) return;
+      // 聚焦到标题位置并滚动到视口
       editor.commands.focus(pos, { scrollIntoView: true });
+      // 选中标题节点，提供视觉反馈
+      editor.commands.setNodeSelection(pos);
     },
     [editor]
   );
